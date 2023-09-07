@@ -7,6 +7,7 @@ namespace Interactions.Database.Core
     {
         public DatabaseContext(DbContextOptions options) : base(options)
         {
+            Database.EnsureCreated();
             Books = Set<BookEntity>();
             Authors = Set<AuthorEntity>();
         }

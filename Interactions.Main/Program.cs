@@ -10,7 +10,7 @@ var services = builder.Services;
 services
     .AddScoped<IBookDomain, BookDomain>()
     .AddLogging()
-    .AddDbContext<DatabaseContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("sqlString"), x => x.MigrationsAssembly("Interactions.Database")))
+    .AddDbContext<DatabaseContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlString"), x => x.MigrationsAssembly("Interactions.Database")))
     .AddEndpointsApiExplorer()
     .AddSwaggerGen();
 
