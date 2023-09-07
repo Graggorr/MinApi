@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Interactions.Database\Interactions.Database.csproj" />
+    <ProjectReference Include="..\Interactions.Domain\Interactions.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@
     {
         public string Name { get; set; }
         public int Id { get; set; }
-        public List<BookEntity> Books { get; set; }
+
+        public virtual List<BookEntity> Books { get; set; }
     }
 }

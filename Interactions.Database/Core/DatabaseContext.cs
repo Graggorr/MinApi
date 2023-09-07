@@ -1,5 +1,4 @@
-﻿using Interactions.Database.Configuration;
-using Interactions.Database.Entities;
+﻿using Interactions.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Interactions.Database.Core
@@ -8,6 +7,7 @@ namespace Interactions.Database.Core
     {
         public DatabaseContext(DbContextOptions options) : base(options)
         {
+            Database.EnsureCreated();
             Books = Set<BookEntity>();
             Authors = Set<AuthorEntity>();
         }
@@ -17,11 +17,53 @@ namespace Interactions.Database.Core
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BookEntity>().ToTable("Books");
-            modelBuilder.Entity<AuthorEntity>().ToTable("Authors");
+            #region book
 
-            modelBuilder.ApplyConfiguration(new BookConfiguration());
-            modelBuilder.ApplyConfiguration(new AuthorConfiguration());
+            var bookEntity = modelBuilder.Entity<BookEntity>();
+
+            bookEntity.HasKey(e => e.Id);
+            bookEntity.Navigation(e => e.Author)
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            bookEntity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("id")
+                .IsRequired();
+            bookEntity.Property(e => e.Name)
+                .HasColumnName("name")
+                .IsRequired();
+            bookEntity.Property(e => e.Description)
+                .HasColumnName("description");
+
+            bookEntity.ToTable("Books");
+
+            #endregion
+
+            #region author
+
+            var authorEntity = modelBuilder.Entity<AuthorEntity>();
+
+            authorEntity.HasKey(e => e.Id);
+            authorEntity.HasMany(e => e.Books)
+                .WithOne(e => e.Author)
+                .HasForeignKey(e => e.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            authorEntity.Navigation(e => e.Books)
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            authorEntity.Property(e => e.Name)
+                .HasColumnName("name")
+                .IsRequired();
+            authorEntity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("id")
+                .IsRequired();
+
+            authorEntity.ToTable("Authors");
+
+
+            #endregion
 
             base.OnModelCreating(modelBuilder);
         }
