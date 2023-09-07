@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interactions.Main", "Interactions.Main\Interactions.Main.csproj", "{7BC0F007-EEFE-4F51-8E85-B040718F48F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interactions.Main", "Interactions.Main\Interactions.Main.csproj", "{7BC0F007-EEFE-4F51-8E85-B040718F48F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interactions.Database", "Interactions.Database\Interactions.Database.csproj", "{20FB1128-C2FF-4074-866E-60642AD793E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interactions.Database", "Interactions.Database\Interactions.Database.csproj", "{20FB1128-C2FF-4074-866E-60642AD793E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interactions.Domain", "Interactions.Domain\Interactions.Domain.csproj", "{555B3700-628B-4BC4-A096-181748603DEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{20FB1128-C2FF-4074-866E-60642AD793E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20FB1128-C2FF-4074-866E-60642AD793E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20FB1128-C2FF-4074-866E-60642AD793E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{555B3700-628B-4BC4-A096-181748603DEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{555B3700-628B-4BC4-A096-181748603DEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{555B3700-628B-4BC4-A096-181748603DEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{555B3700-628B-4BC4-A096-181748603DEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
