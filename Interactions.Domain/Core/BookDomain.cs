@@ -14,6 +14,7 @@ namespace Interactions.Domain.Core
     {
         private readonly ILogger<BookDomain> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IAdapterBuilder<BookDto> _builder;
 
         public BookDomain(ILogger<BookDomain> logger, IServiceScopeFactory scopeFactory)
         {
@@ -21,28 +22,21 @@ namespace Interactions.Domain.Core
             _scopeFactory = scopeFactory;
         }
 
-        public async Task<HttpResponseMessage> Add(BookDto item)
+        public async Task<HttpResponseMessage> Add(BookDto[] items)
         {
             var methodName = nameof(Add);
             _logger.Log(LogLevel.Trace, $"{methodName} - Called.");
 
             using var databaseContext = _scopeFactory.CreateScope().ServiceProvider.GetService<DatabaseContext>();
             {
-                var entity = item.Adapt<BookEntity>();
-                var result = await databaseContext.Books.AddAsync(entity);
-
-                if (result.State != EntityState.Added)
+                foreach (var item in items)
                 {
-                    _logger.Log(LogLevel.Debug, $"{methodName} - Cannot add a new book {item.Name} into the database");
+                    if (!await AddOrUpdateAuthorCore(item, databaseContext))
+                    {
+                        _logger.Log(LogLevel.Warning, $"{methodName} - Cannot add a new book {item.Name} into the database in case of invalid Author");
 
-                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
-                }
-
-                if (!await AddOrUpdateAuthorCore(item, databaseContext))
-                {
-                    _logger.Log(LogLevel.Warning, $"{methodName} - Cannot add a new book {item.Name} into the database in case of invalid Author");
-
-                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                        return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                    }
                 }
 
                 await databaseContext.SaveChangesAsync();
@@ -50,7 +44,6 @@ namespace Interactions.Domain.Core
 
                 return new HttpResponseMessage(HttpStatusCode.Created);
             }
-
         }
 
         public async Task<BookDto> Get(int id)
@@ -69,7 +62,7 @@ namespace Interactions.Domain.Core
                     return null;
                 }
 
-                return entity.Adapt<BookDto>();
+                return entity.Map();
             }
         }
 
@@ -81,14 +74,15 @@ namespace Interactions.Domain.Core
             using var databaseContext = _scopeFactory.CreateScope().ServiceProvider.GetService<DatabaseContext>();
             {
                 var result = await databaseContext.Books.ToListAsync();
-                var dtos = IDomain<BookDto>.Map(result);
+                var collection = new List<BookDto>();
 
-                if (dtos == null)
+                foreach (var book in result)
                 {
-                    _logger.Log(LogLevel.Warning, $"{methodName} - Cannot map entities to dtos");
+                    var dto = book.Map();
+                    collection.Add(dto);
                 }
 
-                return dtos;
+                return collection;
             }
         }
 
