@@ -22,7 +22,10 @@ namespace Interactions.Database.Core
             var bookEntity = modelBuilder.Entity<BookEntity>();
 
             bookEntity.HasKey(e => e.Id);
-            bookEntity.Navigation(e => e.Author)
+            bookEntity.HasMany(e => e.Authors)
+                .WithMany(e => e.Books);
+
+            bookEntity.Navigation(e => e.Authors)
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
 
             bookEntity.Property(e => e.Id)
@@ -44,10 +47,10 @@ namespace Interactions.Database.Core
             var authorEntity = modelBuilder.Entity<AuthorEntity>();
 
             authorEntity.HasKey(e => e.Id);
-            authorEntity.HasMany(e => e.Books)
-                .WithOne(e => e.Author)
-                .HasForeignKey(e => e.AuthorId)
-                .OnDelete(DeleteBehavior.Restrict);
+            authorEntity.HasOne(e => e.FeaturedBook)
+                .WithOne()
+                .HasForeignKey<AuthorEntity>(e => e.FeaturedBookId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             authorEntity.Navigation(e => e.Books)
                 .UsePropertyAccessMode(PropertyAccessMode.Property);

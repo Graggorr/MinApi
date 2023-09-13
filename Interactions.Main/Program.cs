@@ -27,9 +27,9 @@ app.UseHttpsRedirection();
 
 #region Requests
 
-app.MapPost($"{pattern}/books", async (BookDto dto) =>
+app.MapPost($"{pattern}/books", async (BookDto[] dtos) =>
 {
-    return await scopeFactory.CreateScope().ServiceProvider.GetService<IBookDomain>().Add(dto);
+    return await scopeFactory.CreateScope().ServiceProvider.GetService<IBookDomain>().Add(dtos);
 });
 
 app.MapGet($"{pattern}/books", async () =>
