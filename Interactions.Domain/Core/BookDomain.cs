@@ -14,7 +14,6 @@ namespace Interactions.Domain.Core
     {
         private readonly ILogger<BookDomain> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly IAdapterBuilder<BookDto> _builder;
 
         public BookDomain(ILogger<BookDomain> logger, IServiceScopeFactory scopeFactory)
         {
