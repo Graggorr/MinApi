@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using WebStore.Infrastructure.Entities;
 
-namespace WebStore.Database.Entities
+namespace WebStore.Infrastructure.Entities
 {
     public class ItemEntity
     {

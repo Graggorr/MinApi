@@ -1,4 +1,4 @@
-﻿using WebStore.Database.DTO;
+﻿using WebStore.Infrastructure.DTO;
 
 namespace WebStore.Infrastructure.DTO
 {

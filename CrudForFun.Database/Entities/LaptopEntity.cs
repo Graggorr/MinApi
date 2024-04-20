@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WebStore.Database.Entities;
+using WebStore.Infrastructure.Entities;
 
 namespace WebStore.Infrastructure.Entities
 {

@@ -1,17 +1,28 @@
-namespace WebStore.API
+using Application;
+using WebStore.API.Phones;
+using WebStore.Infrastructure;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateSlimBuilder(args);
-            builder.AddServices();
-
-            var app = builder.Build();
-
-            app.MapGroup("/api/v1/webstore").WithTags("WebStore API").MapWebStore();
-            app.Run();
-        }
-    }
-
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
+var group = app.MapGroup("/api/webstore")
+    .WithOpenApi();
+
+group.MapPhones();
+
+app.Run();

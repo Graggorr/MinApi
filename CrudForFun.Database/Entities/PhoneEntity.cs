@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebStore.Database.Entities
+namespace WebStore.Infrastructure.Entities
 {
     public class PhoneEntity
     {

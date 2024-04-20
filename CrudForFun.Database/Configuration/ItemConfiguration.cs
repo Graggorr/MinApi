@@ -1,8 +1,8 @@
-﻿using WebStore.Database.Entities;
+﻿using WebStore.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace WebStore.Database.Configuration
+namespace WebStore.Infrastructure.Configuration
 {
     internal class ItemConfiguration : IEntityTypeConfiguration<ItemEntity>
     {
