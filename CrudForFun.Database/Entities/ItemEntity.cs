@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WebStore.Infrastructure.Entities;
 
 namespace WebStore.Database.Entities
 {
@@ -9,5 +10,6 @@ namespace WebStore.Database.Entities
         [Required]
         public required string Name { get; set; }
         public virtual PhoneEntity? Phone { get; set; }
+        public virtual LaptopEntity? Laptop { get; set; }
     }
 }

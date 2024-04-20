@@ -10,6 +10,7 @@ namespace WebStore.Database.Configuration
         {
             builder.HasKey(e => e.ItemId);
             builder.HasOne(e => e.Phone).WithOne(e => e.Item).HasForeignKey<ItemEntity>(e => e.ItemId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.Laptop).WithOne(e => e.Item).HasForeignKey<ItemEntity>(e => e.ItemId).OnDelete(DeleteBehavior.Cascade);
 
             builder.Navigation(e => e.Phone).UsePropertyAccessMode(PropertyAccessMode.Property);
 

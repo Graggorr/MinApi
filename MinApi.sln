@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.API", "CrudForFun\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.Infrastructure", "CrudForFun.Database\WebStore.Infrastructure.csproj", "{FB3F0917-5A29-4170-BD28-2A43312E26CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebStore.Domain", "WebStore.Domain\WebStore.Domain.csproj", "{C7C0B289-1402-48E6-96CA-D100568A154E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FB3F0917-5A29-4170-BD28-2A43312E26CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB3F0917-5A29-4170-BD28-2A43312E26CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB3F0917-5A29-4170-BD28-2A43312E26CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7C0B289-1402-48E6-96CA-D100568A154E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7C0B289-1402-48E6-96CA-D100568A154E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7C0B289-1402-48E6-96CA-D100568A154E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7C0B289-1402-48E6-96CA-D100568A154E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
