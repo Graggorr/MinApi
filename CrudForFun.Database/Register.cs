@@ -1,16 +1,21 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using WebStore.Infrastructure.Phones;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using WebStore.Domain;
+using WebStore.Infrastructure;
+using WebStore.Infrastructure.Clients;
+using WebStore.Infrastructure.Orders;
 
-namespace WebStore.Infrastructure;
-
-public static class Register
+namespace WebStore.Application
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static class Register
     {
-        services.AddScoped<IPhonesRepository, PhonesRepository>();
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
+        {
+            services.AddScoped<IClientRepository, ClientRepository>()
+                .AddScoped<IOrderRepository, OrderRepository>()
+                .AddDbContext<WebStoreContext>(options => options.UseSqlServer(connectionString));
 
-        // services.AddDbContext<>()
-
-        return services;
+            return services;
+        }
     }
 }
