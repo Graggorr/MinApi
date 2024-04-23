@@ -8,6 +8,7 @@ namespace WebStore.Domain
     {
         private Client() { }
 
+        public Guid Id { get; init; }
         [Required]
         public string Name { get; set; }
         [Required]
@@ -22,16 +23,18 @@ namespace WebStore.Domain
             //var emailAddress = new MailAddress("Email");
         }
 
+        public string ToStringWithoutId() => $"Name: {Name}\nPhoneNumber: {PhoneNumber}\nEmail: {Email}";
+
         public static async Task<Result<Client>> CreateClientAsync(ClientDto dto, IClientRepository clientRepository, IOrderRepository orderRepository,
-            bool verifyUniqueNumber = true, bool verifyUniqueEmail = true)
+            bool verifyUniqueNumber, bool verifyUniqueEmail)
         {
             if (verifyUniqueNumber)
             {
                 var result = await clientRepository.IsNumberUniqueAsync(dto.PhoneNumber);
 
-                if (result.IsFailed)
+                if (!result)
                 {
-                    return Result.Fail(result.Errors);
+                    return Result.Fail($"{dto.PhoneNumber} is already used");
                 }
             }
 
@@ -39,9 +42,9 @@ namespace WebStore.Domain
             {
                 var result = await clientRepository.IsEmailUniqueAsync(dto.Email);
 
-                if (result.IsFailed)
+                if (!result)
                 {
-                    return Result.Fail(result.Errors);
+                    return Result.Fail($"{dto.Email} is already used");
                 }
             }
 
@@ -62,7 +65,7 @@ namespace WebStore.Domain
                 }
             }
 
-            var client = new Client { PhoneNumber = dto.PhoneNumber, Email = dto.Email, Name = dto.Name, Orders = orders };
+            var client = new Client { Id = Guid.NewGuid(), PhoneNumber = dto.PhoneNumber, Email = dto.Email, Name = dto.Name, Orders = orders };
 
             return client;
         }

@@ -1,5 +1,4 @@
-﻿using WebStore.API.Orders;
-using WebStore.Domain;
+﻿using WebStore.Domain;
 
 namespace WebStore.API.Clients;
 
@@ -8,17 +7,15 @@ public record PostClientRequest(string PhoneNumber, string Name, string Email, I
 public record PostClientResponse(Client Client); 
 
 //Put
-public record PutClientRequest(string PhoneNumber);
-public record PutClientRequestBody(string Name, string Email, IList<OrderDto> Orders);
-public record PutClientsPhoneNumberRequest(string OldPhoneNumber);
-public record PutClientsPhoneNumberRequestBody(string NewPhoneNumber);
+public record PutClientRequest(Guid Id);
+public record PutClientRequestBody(string Name, string PhoneNumber, string Email, IList<OrderDto> Orders);
 public record PutClientResponse(Client Client);
 
 //Delete
-public record DeleteClientRequest(string PhoneNumber);
+public record DeleteClientRequest(Guid Id);
 
 //Get
-public record GetClientRequest(string PhoneNumber);
+public record GetClientRequest(Guid Id);
 public record GetAllClientsRequest();
 public record GetAllClientsResponse(IList<Client> Clients);
 public record GetClientResponse(Client Client);

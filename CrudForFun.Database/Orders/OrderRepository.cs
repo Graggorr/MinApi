@@ -31,12 +31,12 @@ namespace WebStore.Infrastructure.Orders
             throw new NotImplementedException();
         }
 
-        public Task<Result> PostOrderAsync(Order client)
+        public Task<Result> CreateOrderAsync(Order client)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Result> PutOrderAsync(Order client)
+        public Task<Result> UpdateOrderAsync(Order client)
         {
             throw new NotImplementedException();
         }

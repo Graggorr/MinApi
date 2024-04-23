@@ -8,7 +8,7 @@ namespace WebStore.Infrastructure.Clients
     {
         private readonly WebStoreContext _context = context;
 
-        public async Task<Result> PostClientAsync(Client client)
+        public async Task<bool> AddClientAsync(Client client)
         {
             var result = await _context.Clients.AddAsync(client);
 
@@ -16,19 +16,19 @@ namespace WebStore.Infrastructure.Clients
             {
                 await _context.SaveChangesAsync();
 
-                return Result.Ok();
+                return true;
             }
 
-            return Result.Fail(new Error($"Cannot save {client.Name} into the repository"));
+            return false;
         }
 
-        public async Task<Result> PutClientAsync(Client client)
+        public async Task<RepositoryResult> UpdateClientAsync(Client client)
         {
-            var entity = await _context.Clients.SingleOrDefaultAsync(x => x.PhoneNumber.Equals(client.PhoneNumber));
+            var entity = await _context.Clients.SingleOrDefaultAsync(x => x.Id.Equals(client.Id));
 
             if (entity is null)
             {
-                return Result.Fail(new Error($"{client.PhoneNumber} is not contained in the repository"));
+                return RepositoryResult.NotFound;
             }
 
             entity.Orders = client.Orders;
@@ -37,47 +37,44 @@ namespace WebStore.Infrastructure.Clients
 
             await _context.SaveChangesAsync();
 
-            return Result.Ok();
+            return RepositoryResult.Success;
         }
 
-        public async Task<Result> DeleteClientAsync(string phoneNumber)
+        public async Task<RepositoryResult> DeleteClientAsync(Guid id)
         {
-            var result = await GetClientAsync(phoneNumber);
+            var client = await _context.Clients.FindAsync(id);
 
-            if (result.IsFailed)
+            if (client is null)
             {
-                return Result.Fail(result.Errors);
+                return RepositoryResult.NotFound;
             }
 
-            var entityEntry = _context.Clients.Remove(result.Value);
+            var entityEntry = _context.Clients.Remove(client);
 
             if (entityEntry.State is EntityState.Deleted)
             {
                 await _context.SaveChangesAsync();
 
-                return Result.Ok();
+                return RepositoryResult.Success;
             }
 
-            return Result.Fail(new Error($"Cannot remove {result.Value.Name} from the repository"));
+            return RepositoryResult.Failed;
         }
 
-        public async Task<Result<Client>> GetClientAsync(string phoneNumber)
+        public async Task<Result<Client>> GetClientAsync(Guid id)
         {
-            var client = await _context.Clients.FindAsync(phoneNumber);
+            var client = await _context.Clients.FindAsync(id);
 
             if (client is not null)
             {
                 return Result.Ok(client);
             }
 
-            return Result.Fail(new Error($"{phoneNumber} is not contained in the repository"));
+            return Result.Fail(new Error($"{id} is not contained in the repository"));
         }
 
-        public async Task<Result> IsNumberUniqueAsync(string phoneNumber) => await _context.Clients.AnyAsync(x => x.Equals(phoneNumber)) ?
-             Result.Fail(new Error($"{phoneNumber} is already used")) : Result.Ok();
-
-        public async Task<Result> IsEmailUniqueAsync(string email) => await _context.Clients.AnyAsync(x => x.Equals(email)) ?
-            Result.Fail(new Error($"{email} is already used")) : Result.Ok();
+        public async Task<bool> IsNumberUniqueAsync(string phoneNumber) => !await _context.Clients.AnyAsync(x => x.Equals(phoneNumber));
+        public async Task<bool> IsEmailUniqueAsync(string email) => !await _context.Clients.AnyAsync(x => x.Equals(email));
 
         public async Task<Result<IEnumerable<Client>>> GetAllClientsAsync() => Result.Ok(await _context.Clients.ToListAsync() as IEnumerable<Client>);
     }

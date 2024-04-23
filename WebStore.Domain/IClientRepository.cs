@@ -4,12 +4,12 @@ namespace WebStore.Domain
 {
     public interface IClientRepository
     {
-        public Task<Result> PostClientAsync(Client client);
-        public Task<Result> PutClientAsync(Client client);
-        public Task<Result> DeleteClientAsync(string phoneNumber);
-        public Task<Result<Client>> GetClientAsync(string phoneNumber);
+        public Task<bool> AddClientAsync(Client client);
+        public Task<RepositoryResult> UpdateClientAsync(Client client);
+        public Task<RepositoryResult> DeleteClientAsync(Guid id);
+        public Task<Result<Client>> GetClientAsync(Guid id);
         public Task<Result<IEnumerable<Client>>> GetAllClientsAsync();
-        public Task<Result> IsNumberUniqueAsync(string phoneNumber);
-        public Task<Result> IsEmailUniqueAsync(string email);
+        public Task<bool> IsNumberUniqueAsync(string phoneNumber);
+        public Task<bool> IsEmailUniqueAsync(string email);
     }
 }

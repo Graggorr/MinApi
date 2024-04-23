@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebStore.Application.Clients;
 using WebStore.Domain;
 using System.Text;
+using FluentResults;
 
 namespace WebStore.API.Clients;
 
@@ -10,22 +11,22 @@ public static class Endpoints
 {
     public static IEndpointRouteBuilder MapClients(this IEndpointRouteBuilder builder)
     {
-        builder.MapGroup("/client").WithTags("Clients");
+        var group = builder.MapGroup("/client").WithTags("Clients");
 
-        builder.MapPost(string.Empty, PostClient);
-        builder.MapGet("/{phoneNumber}", GetClient);
-        builder.MapGet(string.Empty, GetAllClients);
-        builder.MapPut("/{phoneNumber}", PutClient);
-        builder.MapDelete("/{phoneNumber}", DeleteClient);
+        group.MapPost(string.Empty, PostClient);
+        group.MapGet("/{id}", GetClient);
+        group.MapGet(string.Empty, GetAllClients);
+        group.MapPut("/{id}", PutClient);
+        group.MapDelete("/{id}", DeleteClient);
 
         return builder;
     }
 
-    private static async Task<Results<Ok<PostClientResponse>, BadRequest<string>>>PostClient(
+    private static async Task<Results<Ok<PostClientResponse>, BadRequest<string>>> PostClient(
         [AsParameters] PostClientRequest request,
         [FromServices] IPostClientRequestHandler handler)
     {
-        var dto = new ClientDto(request.Name, request.PhoneNumber, request.Email, request.Orders);
+        var dto = new ClientDto(Guid.Empty, request.Name, request.PhoneNumber, request.Email, request.Orders);
 
         var response = await handler.Handle(dto, CancellationToken.None);
 
@@ -47,21 +48,18 @@ public static class Endpoints
        [FromBody] PutClientRequestBody body,
        [FromServices] IPutClientRequestHandler handler)
     {
-        var dto = new ClientDto(body.Name, request.PhoneNumber, body.Email, body.Orders);
+        var dto = new ClientDto(request.Id, body.Name, body.PhoneNumber, body.Email, body.Orders);
 
         var response = await handler.Handle(dto, CancellationToken.None);
 
         if (response.IsFailed)
         {
-            if(response.Errors.First().Message.Contains("is not contained"))
+            if (response.Errors.First().Message.Contains("is not contained"))
             {
                 return TypedResults.NotFound();
             }
 
-            var stringBuilder = new StringBuilder();
-            response.Errors.ForEach(e => stringBuilder.AppendLine(e.Message));
-
-            return TypedResults.BadRequest(stringBuilder.ToString());
+            return TypedResults.BadRequest(CreateErrorResponse(response.Errors));
         }
 
         var mappedResponse = new PutClientResponse(response.Value);
@@ -69,16 +67,21 @@ public static class Endpoints
         return TypedResults.Ok(mappedResponse);
     }
 
-    private static async Task<Results<Ok, NotFound>> DeleteClient(
+    private static async Task<Results<Ok, NotFound, BadRequest<string>>> DeleteClient(
         [AsParameters] DeleteClientRequest request,
         [FromServices] IDeleteClientRequestHandler handler)
     {
-        var dto = new ClientDto(string.Empty, request.PhoneNumber, string.Empty, null);
+        var dto = new ClientDto(request.Id, string.Empty, string.Empty, string.Empty, null);
         var response = await handler.Handle(dto, CancellationToken.None);
 
         if (response.IsFailed)
         {
-            TypedResults.NotFound();
+            if (response.Errors.First().Message.Contains("No content"))
+            {
+                return TypedResults.NotFound();
+            }
+
+            return TypedResults.BadRequest(CreateErrorResponse(response.Errors));
         }
 
         return TypedResults.Ok();
@@ -88,7 +91,7 @@ public static class Endpoints
         [AsParameters] GetClientRequest request,
         [FromServices] IGetClientRequestHandler handler)
     {
-        var dto = new ClientDto(string.Empty, request.PhoneNumber, string.Empty, null);
+        var dto = new ClientDto(request.Id, string.Empty, string.Empty, string.Empty, null);
         var response = await handler.Handle(dto, CancellationToken.None);
 
         if (response.IsFailed)
@@ -115,5 +118,13 @@ public static class Endpoints
         var mappedResponse = new GetAllClientsResponse(response.Value.ToList());
 
         return TypedResults.Ok(mappedResponse);
+    }
+
+    private static string CreateErrorResponse(List<IError> errors)
+    {
+        var stringBuilder = new StringBuilder();
+        errors.ForEach(e => stringBuilder.AppendLine(e.Message));
+
+        return stringBuilder.ToString();
     }
 }
