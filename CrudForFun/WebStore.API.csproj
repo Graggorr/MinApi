@@ -16,7 +16,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\CrudForFun.Database\WebStore.Infrastructure.csproj" />
 		<ProjectReference Include="..\src\Application\WebStore.Application.csproj" />
+		<ProjectReference Include="..\src\WebStore.EventBusRabbitMq\WebStore.EventBusRabbitMq.csproj" />
+		<ProjectReference Include="..\WebStore.Domain\WebStore.Domain.csproj" />
+		<ProjectReference Include="..\WebStore.EventBus\WebStore.EventBus.csproj" />
 	</ItemGroup>
 
 </Project>

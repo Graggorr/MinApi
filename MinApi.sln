@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.Infrastructure", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.Domain", "WebStore.Domain\WebStore.Domain.csproj", "{C7C0B289-1402-48E6-96CA-D100568A154E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebStore.Application", "src\Application\WebStore.Application.csproj", "{BAF99129-BFE4-4A42-96BC-806642572185}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.Application", "src\Application\WebStore.Application.csproj", "{BAF99129-BFE4-4A42-96BC-806642572185}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebStore.EventBus", "WebStore.EventBus\WebStore.EventBus.csproj", "{AE99504D-33EA-445A-83D6-017E350BF690}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebStore.EventBusRabbitMq", "src\WebStore.EventBusRabbitMq\WebStore.EventBusRabbitMq.csproj", "{9EBCA821-E7ED-45CD-B670-FF0566DBD441}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{BAF99129-BFE4-4A42-96BC-806642572185}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAF99129-BFE4-4A42-96BC-806642572185}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAF99129-BFE4-4A42-96BC-806642572185}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE99504D-33EA-445A-83D6-017E350BF690}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE99504D-33EA-445A-83D6-017E350BF690}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE99504D-33EA-445A-83D6-017E350BF690}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE99504D-33EA-445A-83D6-017E350BF690}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EBCA821-E7ED-45CD-B670-FF0566DBD441}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EBCA821-E7ED-45CD-B670-FF0566DBD441}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EBCA821-E7ED-45CD-B670-FF0566DBD441}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EBCA821-E7ED-45CD-B670-FF0566DBD441}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

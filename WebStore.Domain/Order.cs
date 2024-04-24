@@ -20,5 +20,6 @@ namespace WebStore.Domain
         }
 
         public string ToStringEmailMessage() => $"\n{Name} - {Price}";
+        public string ToStringWithoutClients() => $"id: {Id}\nname: {Name}\nprice: {Price}\ndescription: {Description}";
     }
 }

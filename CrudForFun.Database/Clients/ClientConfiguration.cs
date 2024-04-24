@@ -8,6 +8,8 @@ namespace WebStore.Infrastructure.Clients
     {
         public void Configure(EntityTypeBuilder<Client> builder)
         {
+            builder.ToTable(nameof(Client));
+
             builder.HasKey(e => e.Id);
 
             builder.HasIndex(e => e.Email).IsUnique();

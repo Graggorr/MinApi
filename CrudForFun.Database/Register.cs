@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WebStore.Domain;
-using WebStore.Infrastructure;
 using WebStore.Infrastructure.Clients;
 using WebStore.Infrastructure.Orders;
 
-namespace WebStore.Application
+namespace WebStore.Infrastructure
 {
     public static class Register
     {

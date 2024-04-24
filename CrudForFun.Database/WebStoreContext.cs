@@ -17,9 +17,6 @@ namespace WebStore.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Client>().ToTable("Clients");
-            modelBuilder.Entity<Order>().ToTable("Orders");
-
             modelBuilder.ApplyConfiguration(new ClientConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
 
