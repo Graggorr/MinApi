@@ -24,14 +24,15 @@ namespace WebStore.Infrastructure.Clients
 
         public async Task<RepositoryResult> UpdateClientAsync(Client client)
         {
-            var entity = await _context.Clients.SingleOrDefaultAsync(x => x.Id.Equals(client.Id));
+            var entity = await _context.Clients.FindAsync(client.Id);
 
             if (entity is null)
             {
                 return RepositoryResult.NotFound;
             }
 
-            entity.Orders = client.Orders;
+            entity.Orders.Clear();
+            entity.Orders.ForEach(entity.Orders.Add);
             entity.Email = client.Email;
             entity.Name = client.Name;
 
@@ -73,8 +74,8 @@ namespace WebStore.Infrastructure.Clients
             return Result.Fail(new Error($"{id} is not contained in the repository"));
         }
 
-        public async Task<bool> IsNumberUniqueAsync(string phoneNumber) => !await _context.Clients.AnyAsync(x => x.Equals(phoneNumber));
-        public async Task<bool> IsEmailUniqueAsync(string email) => !await _context.Clients.AnyAsync(x => x.Equals(email));
+        public async Task<bool> IsPhoneNumberUniqueAsync(string phoneNumber) => !await _context.Clients.AnyAsync(x => x.PhoneNumber.Equals(phoneNumber));
+        public async Task<bool> IsEmailUniqueAsync(string email) => !await _context.Clients.AnyAsync(x => x.Email.Equals(email));
 
         public async Task<Result<IEnumerable<Client>>> GetAllClientsAsync() => Result.Ok(await _context.Clients.ToListAsync() as IEnumerable<Client>);
     }

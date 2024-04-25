@@ -1,35 +1,44 @@
 ﻿using FluentResults;
 using Riok.Mapperly.Abstractions;
 using WebStore.Domain;
-using MediatR;
 using MapsterMapper;
+using WebStore.EventBus.Common;
+using WebStore.EventBus.Events;
 
 namespace WebStore.Application.Clients;
 
-public class PostClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository, ClientMapper mapper) : IPostClientRequestHandler
+public class PostClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository,
+    IEventBus eventBus, ClientMapper mapper) : IPostClientRequestHandler
 {
     //CQRS
     private readonly IClientRepository _repository = clientRepository;
     private readonly IOrderRepository _orderRepository = orderRepository;
+    private readonly IEventBus _eventBus = eventBus;
     private readonly ClientMapper _mapper = mapper;
 
     public async Task<Result<Client>> Handle(ClientDto dto, CancellationToken cancellationToken)
     {
-        var client = await Client.CreateClientAsync(dto, _repository, _orderRepository, true, true);
+        var clientResult = await Client.CreateClientAsync(dto, _repository, _orderRepository, true, true);
 
-        if (client.IsFailed)
+        if (clientResult.IsFailed)
         {
-            return Result.Fail(client.Errors);
+            return Result.Fail(clientResult.Errors);
         }
 
-        var result = await _repository.AddClientAsync(client.Value);
+        var client = clientResult.Value;
+
+        var result = await _repository.AddClientAsync(client);
 
         if (result)
         {
-            return Result.Ok(client.Value);
+            var integrationEvent = new ClientCreatedEvent(client.Id.ToString(), client.Name, client.PhoneNumber,
+                client.Email, client.Orders.Select(x => x.ToStringWithoutClients()).ToList());
+            _eventBus.Publish(integrationEvent);
+
+            return Result.Ok(client);
         }
 
-        return Result.Fail($"Cannot handle {client.Value.ToStringWithoutId()}");
+        return Result.Fail($"Cannot handle {client.ToStringWithoutId()}");
     }
 }
 
