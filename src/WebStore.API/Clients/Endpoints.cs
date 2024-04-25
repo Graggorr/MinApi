@@ -32,10 +32,7 @@ public static class Endpoints
 
         if (response.IsFailed)
         {
-            var stringBuilder = new StringBuilder();
-            response.Errors.ForEach(e => stringBuilder.AppendLine(e.Message));
-
-            return TypedResults.BadRequest(stringBuilder.ToString());
+            return TypedResults.BadRequest(CreateErrorResponse(response.Errors));
         }
 
         var mappedResponse = new PostClientResponse(response.Value);

@@ -13,9 +13,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\CrudForFun.Database\WebStore.Infrastructure.csproj" />
-		<ProjectReference Include="..\..\WebStore.Domain\WebStore.Domain.csproj" />
-		<ProjectReference Include="..\..\WebStore.EventBus\WebStore.EventBus.csproj" />
+	  <ProjectReference Include="..\WebStore.Domain\WebStore.Domain.csproj" />
+	  <ProjectReference Include="..\WebStore.EventBus\WebStore.EventBus.csproj" />
+	  <ProjectReference Include="..\WebStore.Infrastructure\WebStore.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>

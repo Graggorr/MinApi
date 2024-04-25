@@ -12,7 +12,7 @@ namespace WebStore.EventBusRabbitMq
     {
         private const string EXCHANGE_NAME = "webstore_event_bus";
 
-        private IConnection? _subscriptionConnection;
+        private IConnection? _connection;
         private IModel? _channel;
         private RabbitMqConfiguration _configuration = configuration;
         private bool _disposed;
@@ -37,8 +37,8 @@ namespace WebStore.EventBusRabbitMq
         {
             await Task.Factory.StartNew(() =>
             {
-                _subscriptionConnection = CreateConnection(_configuration);
-                _channel = _subscriptionConnection.CreateModel();
+                _connection = CreateConnection(_configuration);
+                _channel = _connection.CreateModel();
                 var consumer = new AsyncEventingBasicConsumer(_channel);
 
                 _channel.BasicConsume(_configuration.QueueName, false, consumer);
@@ -69,9 +69,9 @@ namespace WebStore.EventBusRabbitMq
                     _channel?.Close();
                     _channel?.Dispose();
                     _channel = null;
-                    _subscriptionConnection?.Close();
-                    _subscriptionConnection?.Dispose();
-                    _subscriptionConnection = null;
+                    _connection?.Close();
+                    _connection?.Dispose();
+                    _connection = null;
                     _configuration = null;
                 }
 
