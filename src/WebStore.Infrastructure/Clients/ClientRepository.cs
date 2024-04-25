@@ -22,13 +22,13 @@ namespace WebStore.Infrastructure.Clients
             return false;
         }
 
-        public async Task<RepositoryResult> UpdateClientAsync(Client client)
+        public async Task<bool> UpdateClientAsync(Client client)
         {
             var entity = await _context.Clients.FindAsync(client.Id);
 
             if (entity is null)
             {
-                return RepositoryResult.NotFound;
+                return false;
             }
 
             entity.Orders.Clear();
@@ -38,28 +38,22 @@ namespace WebStore.Infrastructure.Clients
 
             await _context.SaveChangesAsync();
 
-            return RepositoryResult.Success;
+            return true;
         }
 
-        public async Task<RepositoryResult> DeleteClientAsync(Guid id)
+        public async Task<bool> DeleteClientAsync(Guid id)
         {
             var client = await _context.Clients.FindAsync(id);
 
             if (client is null)
             {
-                return RepositoryResult.NotFound;
+                return false;
             }
 
-            var entityEntry = _context.Clients.Remove(client);
+            _context.Clients.Remove(client);
+            await _context.SaveChangesAsync();
 
-            if (entityEntry.State is EntityState.Deleted)
-            {
-                await _context.SaveChangesAsync();
-
-                return RepositoryResult.Success;
-            }
-
-            return RepositoryResult.Failed;
+            return true;
         }
 
         public async Task<Result<Client>> GetClientAsync(Guid id)

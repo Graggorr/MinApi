@@ -3,7 +3,7 @@
 namespace WebStore.API.Clients;
 
 //Post
-public record PostClientRequest(string PhoneNumber, string Name, string Email, IList<OrderDto> Orders);
+public record PostClientRequestBody(string PhoneNumber, string Name, string Email, IList<OrderDto> Orders);
 public record PostClientResponse(Client Client); 
 
 //Put
@@ -16,6 +16,6 @@ public record DeleteClientRequest(Guid Id);
 
 //Get
 public record GetClientRequest(Guid Id);
-public record GetAllClientsRequest();
-public record GetAllClientsResponse(IList<Client> Clients);
 public record GetClientResponse(Client Client);
+
+public record GetAllClientsResponse(IList<Client> Clients);
