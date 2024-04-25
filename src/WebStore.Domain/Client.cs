@@ -16,7 +16,7 @@ namespace WebStore.Domain
         [Required]
         public string Email { get; set; }
         [Required]
-        public IList<Order> Orders { get; set; }
+        public List<Order> Orders { get; set; }
 
         public void SendEmailMessageAfterOrderReceiving()
         {
@@ -30,7 +30,7 @@ namespace WebStore.Domain
         {
             if (verifyUniqueNumber)
             {
-                var result = await clientRepository.IsNumberUniqueAsync(dto.PhoneNumber);
+                var result = await clientRepository.IsPhoneNumberUniqueAsync(dto.PhoneNumber);
 
                 if (!result)
                 {
@@ -48,24 +48,38 @@ namespace WebStore.Domain
                 }
             }
 
-            if (dto.Orders.Count == 0)
+            if (dto.Orders?.Count == 0)
             {
                 return Result.Fail(new Error("The order container is empty"));
             }
 
             var orders = new List<Order>();
 
-            foreach(var order in dto.Orders)
+            if (dto.Orders?.Count != 0)
             {
-                var result = await orderRepository.GetOrderAsync(order.Id);
-
-                if (result.IsSuccess)
+                foreach (var order in dto.Orders)
                 {
-                    orders.Add(result.Value);
+                    var result = await orderRepository.GetOrderAsync(order.Id);
+
+                    if (result.IsSuccess)
+                    {
+                        orders.Add(result.Value);
+                    }
                 }
             }
 
-            var client = new Client { Id = Guid.NewGuid(), PhoneNumber = dto.PhoneNumber, Email = dto.Email, Name = dto.Name, Orders = orders };
+            Guid id;
+
+            if (dto.Id == default || dto.Id.Equals(Guid.Empty))
+            {
+                id = Guid.NewGuid();
+            }
+            else
+            {
+                id = dto.Id;
+            }
+
+            var client = new Client { Id = id, PhoneNumber = dto.PhoneNumber, Email = dto.Email, Name = dto.Name, Orders = orders };
 
             return client;
         }

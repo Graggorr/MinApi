@@ -12,11 +12,21 @@ namespace WebStore.Domain
         [Required]
         public double Price { get; init; }
         public string Description { get; init; }
-        public IList<Client> Clients { get; init; }
+        public List<Client> Clients { get; init; }
 
-        public static Task<Result<Order>> CreateOrderAsync(string name, double price, string description)
+        public static async Task<Result<Order>> CreateOrderAsync(OrderDto dto, IClientRepository clientRepository)
         {
-            throw new NotImplementedException();
+            return await Task.Factory.StartNew(() =>
+            {
+                return Result.Ok(new Order
+                {
+                    Id = dto.Id,
+                    Name = dto.Name,
+                    Price = dto.Price,
+                    Description = dto.Description,
+                    Clients = null
+                });
+            });
         }
 
         public string ToStringEmailMessage() => $"\n{Name} - {Price}";
