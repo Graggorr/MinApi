@@ -5,11 +5,8 @@ namespace WebStore.Domain
 {
     public class Order
     {
-        [Required]
         public int Id { get; set; }
-        [Required]
         public string Name { get; init; }
-        [Required]
         public double Price { get; init; }
         public string Description { get; init; }
         public List<Client> Clients { get; init; }

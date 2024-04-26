@@ -10,9 +10,9 @@ namespace WebStore.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
         {
-            services.AddScoped<IClientRepository, ClientRepository>()
-                .AddScoped<IOrderRepository, OrderRepository>()
-                .AddDbContext<WebStoreContext>(options => options.UseSqlServer(connectionString));
+            services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(connectionString));
 
             return services;
         }

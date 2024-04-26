@@ -1,15 +1,14 @@
 ﻿using FluentResults;
 using MediatR;
 using WebStore.Domain;
-using WebStore.EventBus.Common;
-using WebStore.EventBus.Events;
+using WebStore.EventBus;
+using WebStore.Infrastructure.RabbitMq.Events;
 
 namespace WebStore.Application.Clients
 {
     public class PostClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository, IEventBus eventBus)
         : IRequestHandler<PostClientHandlingRequest, Result<Client>>
     {
-        //CQRS
         private readonly IClientRepository _repository = clientRepository;
         private readonly IOrderRepository _orderRepository = orderRepository;
         private readonly IEventBus _eventBus = eventBus;

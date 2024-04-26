@@ -19,10 +19,10 @@ namespace WebStore.Infrastructure.Clients
                 e => e.HasOne(typeof(Client)).WithMany().HasForeignKey($"{typeof(Client)}ForeignKey"),
                 x => x.HasOne(typeof(Order)).WithMany().HasForeignKey($"{typeof(Order)}ForeignKey"));
 
-            builder.Property(e => e.Id).HasColumnName("Id").ValueGeneratedNever();
-            builder.Property(e => e.Name).HasColumnName("Name");
-            builder.Property(e => e.PhoneNumber).HasColumnName("PhoneNumber");
-            builder.Property(e => e.Email).HasColumnName("Email");
+            builder.Property(e => e.Id).HasColumnName("Id").ValueGeneratedNever().IsRequired();
+            builder.Property(e => e.Name).HasColumnName("Name").IsRequired();
+            builder.Property(e => e.PhoneNumber).HasColumnName("PhoneNumber").IsRequired();
+            builder.Property(e => e.Email).HasColumnName("Email").IsRequired();
         }
     }
 }

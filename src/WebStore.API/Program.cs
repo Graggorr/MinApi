@@ -1,18 +1,17 @@
 using WebStore.API.Clients;
+using WebStore.API.Extensions;
 using WebStore.Application;
 using WebStore.Infrastructure;
-using WebStore.EventBusRabbitMq;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddLogging();
+builder.Services.AddWebStoreOptions();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(configuration.GetConnectionString("sqlString"));
-builder.Services.AddRabbitMqEventBus(JsonSerializer.Deserialize<RabbitMqConfiguration>(configuration["RabbitMqConfiguration"]));
 
 var app = builder.Build();
 

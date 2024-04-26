@@ -1,9 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace WebStore.EventBus.Events;
+namespace WebStore.EventBus;
 
 public abstract class IntegrationEvent
 {
     [JsonIgnore()]
-    public abstract string Postfix { get; }
+    public abstract string RouteKey { get; }
 }

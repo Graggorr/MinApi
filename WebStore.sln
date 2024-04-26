@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.EventBusRabbitMq", "src\WebStore.EventBusRabbitMq\WebStore.EventBusRabbitMq.csproj", "{9EBCA821-E7ED-45CD-B670-FF0566DBD441}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.API", "src\WebStore.API\WebStore.API.csproj", "{17BA9A9B-8991-4413-8685-D0EBC44A6C93}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.Application", "src\WebStore.Application\WebStore.Application.csproj", "{5710277B-490B-4B69-B589-879F583B5302}"
@@ -21,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9EBCA821-E7ED-45CD-B670-FF0566DBD441}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EBCA821-E7ED-45CD-B670-FF0566DBD441}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EBCA821-E7ED-45CD-B670-FF0566DBD441}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EBCA821-E7ED-45CD-B670-FF0566DBD441}.Release|Any CPU.Build.0 = Release|Any CPU
 		{17BA9A9B-8991-4413-8685-D0EBC44A6C93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{17BA9A9B-8991-4413-8685-D0EBC44A6C93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17BA9A9B-8991-4413-8685-D0EBC44A6C93}.Release|Any CPU.ActiveCfg = Release|Any CPU
