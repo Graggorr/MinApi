@@ -16,8 +16,8 @@ namespace WebStore.Infrastructure.Clients
             builder.HasIndex(e => e.PhoneNumber).IsUnique();
 
             builder.HasMany(e => e.Orders).WithMany(e => e.Clients).UsingEntity(
-                e => e.HasOne(typeof(Client)).WithMany().HasForeignKey($"{typeof(Client)}ForeignKey"),
-                x => x.HasOne(typeof(Order)).WithMany().HasForeignKey($"{typeof(Order)}ForeignKey"));
+                e => e.HasOne(typeof(Client)).WithMany().HasForeignKey($"{typeof(Client).Name}ForeignKey"),
+                x => x.HasOne(typeof(Order)).WithMany().HasForeignKey($"{typeof(Order).Name}ForeignKey"));
 
             builder.Property(e => e.Id).HasColumnName("Id").ValueGeneratedNever().IsRequired();
             builder.Property(e => e.Name).HasColumnName("Name").IsRequired();

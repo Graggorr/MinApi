@@ -1,6 +1,8 @@
-﻿namespace WebStore.EventBus;
+﻿using FluentResults;
+
+namespace WebStore.EventBus;
 
 public interface IIntegrationEventHandler<T> where T : IntegrationEvent
 {
-    public Task Handle(T integrationEvent);
+    public Task<Result> Handle(T integrationEvent);
 }

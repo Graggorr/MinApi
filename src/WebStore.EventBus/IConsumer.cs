@@ -1,7 +1,9 @@
-﻿namespace WebStore.EventBus
+﻿using FluentResults;
+
+namespace WebStore.EventBus
 {
     public interface IConsumer
     {
-        public void Consume();
+        public Result Consume();
     }
 }

@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
 builder.Services.AddWebStoreOptions();
@@ -20,12 +22,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-        c.RoutePrefix = string.Empty;
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebStore API");
+        c.RoutePrefix = "";
     });
 }
 
+app.UseStaticFiles();
 app.UseHttpsRedirection();
+app.UseAuthorization();
+app.UseAuthentication();
 app.UseRouting();
 
 

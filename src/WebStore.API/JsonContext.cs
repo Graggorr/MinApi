@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using WebStore.API.Clients;
+using WebStore.Infrastructure.RabbitMq;
 
 namespace WebStore.API
 {
@@ -18,6 +19,7 @@ namespace WebStore.API
     [JsonSerializable(typeof(GetClientResponse))]
     [JsonSerializable(typeof(GetAllClientsResponse))]
     [JsonSerializable(typeof(DeleteClientRequest))]
+    [JsonSerializable(typeof(RabbitMqConfiguration))]
     internal partial class JsonContext : JsonSerializerContext
     {
     }
