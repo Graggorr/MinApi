@@ -22,6 +22,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 
 var group = app.MapGroup("/api/webstore")
     .WithOpenApi();

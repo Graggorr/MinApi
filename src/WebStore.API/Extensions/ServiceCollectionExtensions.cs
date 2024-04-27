@@ -7,6 +7,7 @@ namespace WebStore.API.Extensions
         public static IServiceCollection AddWebStoreOptions(this IServiceCollection services)
         {
             services.AddOptions<RabbitMqConfiguration>().BindConfiguration(nameof(RabbitMqConfiguration));
+            services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, JsonContext.Default));
 
             return services;
         }
