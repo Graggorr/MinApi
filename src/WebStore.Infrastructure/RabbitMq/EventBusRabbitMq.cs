@@ -16,16 +16,6 @@ namespace WebStore.Infrastructure.RabbitMq
         {
             try
             {
-                //using var connection = new ConnectionFactory()
-                //{
-                //    UserName = _configuration.UserName,
-                //    Password = _configuration.Password,
-                //    HostName = _configuration.HostName,
-                //    Port = _configuration.Port,
-                //    VirtualHost = _configuration.VirtualHost,
-                //    AutomaticRecoveryEnabled = _configuration.AutomaticRecoveryEnabled,
-                //    Ssl = _configuration.SslOption
-                //}.CreateConnection();
                 var factory = new ConnectionFactory { HostName = "localhost" };
                 using var connection = factory.CreateConnection();
                 using var channel = connection.CreateModel();

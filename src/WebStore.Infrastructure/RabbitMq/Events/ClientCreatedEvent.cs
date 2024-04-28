@@ -10,4 +10,5 @@ public class ClientCreatedEvent(string clientId, string name, string phoneNumber
     public string Email { get; } = email;
     public List<string> Orders { get; } = orders;
     public override string RouteKey => "user/player/customer";
+    public override string QueueName => "client_created";
 }
