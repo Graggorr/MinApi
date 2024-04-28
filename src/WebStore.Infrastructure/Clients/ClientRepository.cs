@@ -8,52 +8,33 @@ namespace WebStore.Infrastructure.Clients
     {
         private readonly WebStoreContext _context = context;
 
-        public async Task<bool> AddClientAsync(Client client)
+        public async Task AddClientAsync(Client client)
         {
-            var result = await _context.Clients.AddAsync(client);
-
-            if (result.State is EntityState.Added)
-            {
-                await _context.SaveChangesAsync();
-
-                return true;
-            }
-
-            return false;
+            await _context.Clients.AddAsync(client);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> UpdateClientAsync(Client client)
+        public async Task UpdateClientAsync(Client client)
         {
             var entity = await _context.Clients.FindAsync(client.Id);
 
-            if (entity is null)
-            {
-                return false;
-            }
-
             entity.Orders.Clear();
-            entity.Orders.ForEach(entity.Orders.Add);
+            client.Orders.ForEach(entity.Orders.Add);
             entity.Email = client.Email;
+            entity.PhoneNumber = client.PhoneNumber;
             entity.Name = client.Name;
 
             await _context.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<bool> DeleteClientAsync(Guid id)
+        public async Task<Result<Client>> DeleteClientAsync(Guid id)
         {
             var client = await _context.Clients.FindAsync(id);
-
-            if (client is null)
-            {
-                return false;
-            }
 
             _context.Clients.Remove(client);
             await _context.SaveChangesAsync();
 
-            return true;
+            return client;
         }
 
         public async Task<Result<Client>> GetClientAsync(Guid id)

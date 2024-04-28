@@ -13,7 +13,7 @@ public static class Register
         services.AddScoped<IRequestHandler<PostClientHandlingRequest, Result<Client>>, PostClientRequestHandler>();
         services.AddScoped<IRequestHandler<GetClientHandlingRequest, Result<Client>>, GetClientRequestHandler>();
         services.AddScoped<IRequestHandler<GetAllClientsHandlingRequest, Result<IEnumerable<Client>>>, GetAllClientsRequestHandler>();
-        services.AddScoped<IRequestHandler<DeleteClientHandlingRequest, Result>, DeleteClientRequestHandler>();
+        services.AddScoped<IRequestHandler<DeleteClientHandlingRequest, Result<Client>>, DeleteClientRequestHandler>();
         services.AddScoped<IRequestHandler<PutClientHandlingRequest, Result<Client>>, PutClientRequestHandler>();
         //services.AddSingleton<ClientMapper>();
 

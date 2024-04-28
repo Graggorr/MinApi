@@ -14,7 +14,7 @@ namespace WebStore.Infrastructure
         {
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
-            services.AddScoped<IEventBus, EventBusRabbitMq>();
+            services.AddSingleton<IEventBus, EventBusRabbitMq>();
             services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(connectionString));
 
             return services;
