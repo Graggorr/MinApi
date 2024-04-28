@@ -9,8 +9,6 @@ public record PostOrderResponse(Order Order);
 //Put
 public record UpdateOrderRequest(int Id);
 public record UpdateOrderRequestBody(string Name, string Description, double Price);
-public record UpdateOrdersPhoneNumberRequest(int Id);
-public record UpdateOrdersPhoneNumberRequestBody(string Name, string Description, double Price);
 public record UpdateOrderResponse(Order Order);
 
 //Delete

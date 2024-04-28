@@ -1,7 +1,5 @@
-﻿using FluentResults;
-using MediatR;
-
-namespace WebStore.Domain;
-
-public record ClientDto(Guid Id, string Name, string PhoneNumber, string Email, IList<OrderDto> Orders): IRequest<Result<Client>>;
-public record OrderDto(int Id, string Name, string Description, double Price, IList<Client> Clients): IRequest<Result<Order>>;
+﻿namespace WebStore.Domain;
+public record ClientDto(Guid Id, string Name, string PhoneNumber, string Email, List<OrderSwaggerDto> Orders);
+public record ClientSwaggerDto(Guid Id, string Name, string PhoneNumber, string Email);
+public record OrderSwaggerDto(int Id, string Name, string Description, double Price);
+public record OrderDto(int Id, string Name, string Description, double Price, List<ClientSwaggerDto> Clients);

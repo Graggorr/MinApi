@@ -1,7 +1,4 @@
 ﻿using FluentResults;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
-
 namespace WebStore.Domain
 {
     public class Client
@@ -9,13 +6,9 @@ namespace WebStore.Domain
         private Client() { }
 
         public Guid Id { get; init; }
-        [Required]
         public string Name { get; set; }
-        [Required]
         public string PhoneNumber { get; set; }
-        [Required]
         public string Email { get; set; }
-        [Required]
         public List<Order> Orders { get; set; }
 
         public void SendEmailMessageAfterOrderReceiving()
@@ -26,9 +19,9 @@ namespace WebStore.Domain
         public string ToStringWithoutId() => $"Name: {Name}\nPhoneNumber: {PhoneNumber}\nEmail: {Email}";
 
         public static async Task<Result<Client>> CreateClientAsync(ClientDto dto, IClientRepository clientRepository, IOrderRepository orderRepository,
-            bool verifyUniqueNumber, bool verifyUniqueEmail)
+            bool verifyUniquePhoneNumber, bool verifyUniqueEmail)
         {
-            if (verifyUniqueNumber)
+            if (verifyUniquePhoneNumber)
             {
                 var result = await clientRepository.IsPhoneNumberUniqueAsync(dto.PhoneNumber);
 

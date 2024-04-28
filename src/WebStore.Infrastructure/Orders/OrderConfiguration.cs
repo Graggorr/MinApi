@@ -9,10 +9,10 @@ namespace WebStore.Infrastructure.Orders
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.HasKey(e => e.Id);
-            builder.Property(e => e.Name).HasColumnName("Name");
-            builder.Property(e => e.Id).HasColumnName("ClientId");
-            builder.Property(e => e.Price).HasColumnName("PhoneNumber");
-            builder.Property(e => e.Description).HasColumnName("Email");
+            builder.Property(e => e.Name).HasColumnName("Name").IsRequired();
+            builder.Property(e => e.Id).HasColumnName("ClientId").IsRequired();
+            builder.Property(e => e.Price).HasColumnName("PhoneNumber").IsRequired();
+            builder.Property(e => e.Description).HasColumnName("Email").IsRequired();
         }
     }
 }

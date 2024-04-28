@@ -12,14 +12,6 @@ namespace WebStore.Infrastructure
             Database.EnsureCreated();
         }
 
-        //Usable only for testing
-        public WebStoreContext(DbContextOptions<WebStoreContext> options, bool isEnsureDelete) : base(options)
-        {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
-        }
-
-
         public DbSet<Client> Clients { get; set; }
         public DbSet<Order> Orders { get; set; }
 

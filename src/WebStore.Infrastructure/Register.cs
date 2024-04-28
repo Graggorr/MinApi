@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WebStore.Domain;
+using WebStore.EventBus;
 using WebStore.Infrastructure.Clients;
 using WebStore.Infrastructure.Orders;
+using WebStore.Infrastructure.RabbitMq;
 
 namespace WebStore.Infrastructure
 {
@@ -10,9 +12,10 @@ namespace WebStore.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
         {
-            services.AddScoped<IClientRepository, ClientRepository>()
-                .AddScoped<IOrderRepository, OrderRepository>()
-                .AddDbContext<WebStoreContext>(options => options.UseSqlServer(connectionString));
+            services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IEventBus, EventBusRabbitMq>();
+            services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(connectionString));
 
             return services;
         }

@@ -5,16 +5,13 @@ namespace WebStore.Domain
 {
     public class Order
     {
-        [Required]
         public int Id { get; set; }
-        [Required]
-        public string Name { get; init; }
-        [Required]
-        public double Price { get; init; }
-        public string Description { get; init; }
-        public List<Client> Clients { get; init; }
+        public string Name { get; set; }
+        public double Price { get; set; }
+        public string Description { get; set; }
+        public List<Client> Clients { get; set; }
 
-        public static async Task<Result<Order>> CreateOrderAsync(OrderDto dto, IClientRepository clientRepository)
+        public static async Task<Result<Order>> CreateOrderAsync(OrderSwaggerDto dto, IClientRepository clientRepository)
         {
             return await Task.Factory.StartNew(() =>
             {

@@ -4,6 +4,7 @@ using WebStore.Application.Clients;
 using WebStore.Domain;
 using System.Text;
 using FluentResults;
+using MediatR;
 
 namespace WebStore.API.Clients;
 
@@ -14,8 +15,8 @@ public static class Endpoints
         var group = builder.MapGroup("/client").WithTags("Clients");
 
         group.MapPost(string.Empty, PostClient);
-        group.MapGet("/{id}", GetClient);
         group.MapGet(string.Empty, GetAllClients);
+        group.MapGet("/{id}", GetClient);
         group.MapPut("/{id}", PutClient);
         group.MapDelete("/{id}", DeleteClient);
 
@@ -23,12 +24,13 @@ public static class Endpoints
     }
 
     private static async Task<Results<Ok<PostClientResponse>, BadRequest<string>>> PostClient(
-        [AsParameters] PostClientRequest request,
-        [FromServices] IPostClientRequestHandler handler)
+        [FromBody] PostClientRequestBody requestBody,
+        [FromServices] IRequestHandler<PostClientHandlingRequest, Result<Client>> handler)
     {
-        var dto = new ClientDto(Guid.Empty, request.Name, request.PhoneNumber, request.Email, request.Orders);
+        var dto = new ClientDto(Guid.Empty, requestBody.Name, requestBody.PhoneNumber, requestBody.Email, requestBody.Orders);
+        var request = new PostClientHandlingRequest(dto);
 
-        var response = await handler.Handle(dto, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         if (response.IsFailed)
         {
@@ -42,12 +44,13 @@ public static class Endpoints
 
     private static async Task<Results<Ok<PutClientResponse>, BadRequest<string>, NotFound>> PutClient(
        [AsParameters] PutClientRequest request,
-       [FromBody] PutClientRequestBody body,
-       [FromServices] IPutClientRequestHandler handler)
+       [FromBody] PutClientRequestBody requestBody,
+       [FromServices] IRequestHandler<PutClientHandlingRequest, Result<Client>> handler)
     {
-        var dto = new ClientDto(request.Id, body.Name, body.PhoneNumber, body.Email, body.Orders);
+        var dto = new ClientDto(request.Id, requestBody.Name, requestBody.PhoneNumber, requestBody.Email, requestBody.Orders);
+        var handlingRequest = new PutClientHandlingRequest(dto);
 
-        var response = await handler.Handle(dto, CancellationToken.None);
+        var response = await handler.Handle(handlingRequest, CancellationToken.None);
 
         if (response.IsFailed)
         {
@@ -66,10 +69,11 @@ public static class Endpoints
 
     private static async Task<Results<Ok, NotFound, BadRequest<string>>> DeleteClient(
         [AsParameters] DeleteClientRequest request,
-        [FromServices] IDeleteClientRequestHandler handler)
+        [FromServices] IRequestHandler<DeleteClientHandlingRequest, Result> handler)
     {
-        var dto = new ClientDto(request.Id, string.Empty, string.Empty, string.Empty, null);
-        var response = await handler.Handle(dto, CancellationToken.None);
+        var handlingRequest = new DeleteClientHandlingRequest(request.Id);
+
+        var response = await handler.Handle(handlingRequest, CancellationToken.None);
 
         if (response.IsFailed)
         {
@@ -86,10 +90,10 @@ public static class Endpoints
 
     private static async Task<Results<Ok<GetClientResponse>, NotFound>> GetClient(
         [AsParameters] GetClientRequest request,
-        [FromServices] IGetClientRequestHandler handler)
+        [FromServices] IRequestHandler<GetClientHandlingRequest, Result<Client>> handler)
     {
-        var dto = new ClientDto(request.Id, string.Empty, string.Empty, string.Empty, null);
-        var response = await handler.Handle(dto, CancellationToken.None);
+        var handlingRequest = new GetClientHandlingRequest(request.Id);
+        var response = await handler.Handle(handlingRequest, CancellationToken.None);
 
         if (response.IsFailed)
         {
@@ -102,10 +106,9 @@ public static class Endpoints
     }
 
     private static async Task<Results<Ok<GetAllClientsResponse>, NotFound>> GetAllClients(
-        [AsParameters] GetClientRequest request,
-        [FromServices] IGetAllClientsRequestHandler handler)
+        [FromServices] IRequestHandler<GetAllClientsHandlingRequest, Result<IEnumerable<Client>>> handler)
     {
-        var response = await handler.Handle();
+        var response = await handler.Handle(new GetAllClientsHandlingRequest(), CancellationToken.None);
 
         if (response.IsFailed)
         {
