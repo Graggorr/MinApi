@@ -1,5 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
+using System.Transactions;
 using WebStore.Domain;
 using WebStore.EventBus;
 using WebStore.Infrastructure.RabbitMq.Events;
@@ -23,19 +25,22 @@ namespace WebStore.Application.Clients
             }
 
             var client = clientResult.Value;
+            var integrationEvent = ClientEvent.CreateIntegrationEvent<ClientCreatedEvent>(client);
 
-            var result = await _repository.AddClientAsync(client);
-
-            if (result)
+            try
             {
-                var integrationEvent = new ClientCreatedEvent(client.Id.ToString(), client.Name, client.PhoneNumber,
-                    client.Email, client.Orders.Select(x => x.ToStringWithoutClients()).ToList());
-                _eventBus.Publish(integrationEvent);
+                using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    Task.WaitAll([_repository.AddClientAsync(client), _eventBus.PublishAsync(integrationEvent)], cancellationToken);
+                    transaction.Complete();
+                }
 
                 return Result.Ok(client);
             }
-
-            return Result.Fail($"Cannot handle {client.ToStringWithoutId()}");
+            catch (Exception exception)
+            {
+                return Result.Fail($"Cannot handle {client.ToStringWithoutId()}. Exception: {exception.Message}");
+            }
         }
     }
 }

@@ -1,13 +1,18 @@
 ﻿using FluentResults;
 using MediatR;
+using System.Transactions;
 using WebStore.Domain;
+using WebStore.EventBus;
+using WebStore.Infrastructure.RabbitMq.Events;
 
 namespace WebStore.Application.Clients
 {
-    public class PutClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository) : IRequestHandler<PutClientHandlingRequest, Result<Client>>
+    public class PutClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository, IEventBus eventBus) :
+        IRequestHandler<PutClientHandlingRequest, Result<Client>>
     {
         private readonly IClientRepository _clientRepository = clientRepository;
         private readonly IOrderRepository _orderRepository = orderRepository;
+        private readonly IEventBus _eventBus = eventBus;
 
         public async Task<Result<Client>> Handle(PutClientHandlingRequest request, CancellationToken cancellationToken)
         {
@@ -32,14 +37,23 @@ namespace WebStore.Application.Clients
                 return Result.Fail(clientResult.Errors);
             }
 
-            var result = await _clientRepository.UpdateClientAsync(clientResult.Value);
+            var client = clientResult.Value;
+            var integrationEvent = ClientEvent.CreateIntegrationEvent<ClientUpdatedEvent>(client);
 
-            if (result)
+            try
             {
-                return Result.Ok();
-            }
+                using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    Task.WaitAll([_clientRepository.UpdateClientAsync(client), _eventBus.PublishAsync(integrationEvent)], cancellationToken);
+                    transaction.Complete();
+                }
 
-            return Result.Fail($"{clientResult.Value.Id} is not found");
+                return Result.Ok(client);
+            }
+            catch (Exception exception)
+            {
+                return Result.Fail(exception.Message);
+            }
         }
     }
 }

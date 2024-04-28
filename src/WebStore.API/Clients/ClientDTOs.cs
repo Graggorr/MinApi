@@ -13,6 +13,7 @@ public record PutClientResponse(Client Client);
 
 //Delete
 public record DeleteClientRequest(Guid Id);
+public record DeleteClientResponse(Client Client);
 
 //Get
 public record GetClientRequest(Guid Id);

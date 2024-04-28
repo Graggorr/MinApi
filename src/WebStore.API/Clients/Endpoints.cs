@@ -67,9 +67,9 @@ public static class Endpoints
         return TypedResults.Ok(mappedResponse);
     }
 
-    private static async Task<Results<Ok, NotFound, BadRequest<string>>> DeleteClient(
+    private static async Task<Results<Ok<DeleteClientResponse>, NotFound, BadRequest<string>>> DeleteClient(
         [AsParameters] DeleteClientRequest request,
-        [FromServices] IRequestHandler<DeleteClientHandlingRequest, Result> handler)
+        [FromServices] IRequestHandler<DeleteClientHandlingRequest, Result<Client>> handler)
     {
         var handlingRequest = new DeleteClientHandlingRequest(request.Id);
 
@@ -85,7 +85,9 @@ public static class Endpoints
             return TypedResults.BadRequest(CreateErrorResponse(response.Errors));
         }
 
-        return TypedResults.Ok();
+        var mappedResponse = new DeleteClientResponse(response.Value);
+
+        return TypedResults.Ok(mappedResponse);
     }
 
     private static async Task<Results<Ok<GetClientResponse>, NotFound>> GetClient(
