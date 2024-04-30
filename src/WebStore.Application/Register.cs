@@ -21,7 +21,8 @@ public static class Register
         services.AddScoped<IRequestHandler<GetAllClientsHandlingRequest, Result<IEnumerable<Client>>>, GetAllClientsRequestHandler>();
         services.AddScoped<IRequestHandler<DeleteClientHandlingRequest, Result<Client>>, DeleteClientRequestHandler>();
         services.AddScoped<IRequestHandler<PutClientHandlingRequest, Result<Client>>, UpdateClientRequestHandler>();
-        services.AddScoped<IValidator<PostClientHandlingRequest>, ClientValidator>();
+        services.AddScoped<IValidator<PostClientHandlingRequest>, CreateClientValidator>();
+        services.AddScoped<IValidator<PutClientHandlingRequest>, UpdateClientValidator>();
         services.AddMediatR(config =>
         {
             config.Lifetime = ServiceLifetime.Scoped;

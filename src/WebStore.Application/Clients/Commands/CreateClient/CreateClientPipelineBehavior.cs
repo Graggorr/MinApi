@@ -25,7 +25,7 @@ namespace WebStore.Application.Clients.Commands.CreateClient
                 return Result.Fail(stringBuilder.ToString());
             }
 
-            var businessValidationResult = await ClientValidator.BusinessValidationAsync(_clientRepository, _orderRepository, request.Dto);
+            var businessValidationResult = await _validator.BusinessValidationAsync(_clientRepository, _orderRepository, request.Dto);
 
             if (businessValidationResult.IsFailed)
             {

@@ -2,6 +2,7 @@
 using FluentValidation;
 using MediatR;
 using System.Text;
+using WebStore.Application.Clients.Commands.CreateClient;
 using WebStore.Domain;
 
 namespace WebStore.Application.Clients.Commands.UpdateClient
@@ -25,7 +26,7 @@ namespace WebStore.Application.Clients.Commands.UpdateClient
                 return Result.Fail(stringBuilder.ToString());
             }
 
-            var businessValidationResult = await ClientValidator.BusinessValidationAsync(_clientRepository, _orderRepository, request.Dto);
+            var businessValidationResult = await _validator.BusinessValidationAsync(_clientRepository, _orderRepository, request.Dto);
 
             if (businessValidationResult.IsFailed)
             {

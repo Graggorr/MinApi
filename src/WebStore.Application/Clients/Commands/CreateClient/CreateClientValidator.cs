@@ -2,11 +2,11 @@
 using FluentValidation;
 using WebStore.Domain;
 
-namespace WebStore.Application.Clients.Commands
+namespace WebStore.Application.Clients.Commands.CreateClient
 {
-    public sealed class ClientValidator : AbstractValidator<PostClientHandlingRequest>
+    public sealed class CreateClientValidator : AbstractValidator<PostClientHandlingRequest>
     {
-        public ClientValidator()
+        public CreateClientValidator()
         {
             RuleFor(x => x.Dto.Name).NotEmpty();
             RuleFor(x => x.Dto.Orders).NotEmpty();
