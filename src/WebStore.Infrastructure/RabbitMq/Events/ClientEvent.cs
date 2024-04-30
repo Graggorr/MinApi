@@ -14,7 +14,7 @@ namespace WebStore.Infrastructure.RabbitMq.Events
 
         public static T CreateIntegrationEvent<T>(Client client) where T : ClientEvent
         {
-            var constructor = typeof(T).GetConstructor(BindingFlags.Public, [typeof(string), typeof(string), typeof(string), typeof(string), typeof(List<string>)]);
+            var constructor = typeof(T).GetConstructor(BindingFlags.Public | BindingFlags.Instance, [typeof(string), typeof(string), typeof(string), typeof(string), typeof(List<string>)]);
             return constructor.Invoke([client.Id.ToString(), client.Name, client.PhoneNumber, client.Email, client.Orders.Select(x => x.ToStringWithoutClients()).ToList()]) as T;
         }
     }

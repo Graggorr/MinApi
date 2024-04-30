@@ -9,7 +9,7 @@ namespace WebStore.Domain
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
-        public List<Order> Orders { get; set; }
+        public List<Order> Orders { get; init; }
 
         public void SendEmailMessageAfterOrderReceiving()
         {
@@ -18,63 +18,21 @@ namespace WebStore.Domain
 
         public string ToStringWithoutId() => $"Name: {Name}\nPhoneNumber: {PhoneNumber}\nEmail: {Email}";
 
-        public static async Task<Result<Client>> CreateClientAsync(ClientDto dto, IClientRepository clientRepository, IOrderRepository orderRepository,
-            bool verifyUniquePhoneNumber, bool verifyUniqueEmail)
+        public static async Task<Result<Client>> CreateClientAsync(ClientDto dto, IOrderRepository orderRepository)
         {
-            if (verifyUniquePhoneNumber)
-            {
-                var result = await clientRepository.IsPhoneNumberUniqueAsync(dto.PhoneNumber);
-
-                if (!result)
-                {
-                    return Result.Fail($"{dto.PhoneNumber} is already used");
-                }
-            }
-
-            if (verifyUniqueEmail)
-            {
-                var result = await clientRepository.IsEmailUniqueAsync(dto.Email);
-
-                if (!result)
-                {
-                    return Result.Fail($"{dto.Email} is already used");
-                }
-            }
-
-            if (dto.Orders?.Count == 0)
-            {
-                return Result.Fail(new Error("The order container is empty"));
-            }
-
             var orders = new List<Order>();
 
-            if (dto.Orders?.Count != 0)
+            foreach (var order in dto.Orders)
             {
-                foreach (var order in dto.Orders)
-                {
-                    var result = await orderRepository.GetOrderAsync(order.Id);
+                var result = await orderRepository.GetOrderAsync(order.Id);
 
-                    if (result.IsSuccess)
-                    {
-                        orders.Add(result.Value);
-                    }
+                if (result.IsSuccess)
+                {
+                    orders.Add(result.Value);
                 }
             }
 
-            Guid id;
-
-            if (dto.Id == default || dto.Id.Equals(Guid.Empty))
-            {
-                id = Guid.NewGuid();
-            }
-            else
-            {
-                id = dto.Id;
-            }
-
-            var client = new Client { Id = id, PhoneNumber = dto.PhoneNumber, Email = dto.Email, Name = dto.Name, Orders = orders };
-
-            return client;
+            return new Client { Id = dto.Id, PhoneNumber = dto.PhoneNumber, Email = dto.Email, Name = dto.Name, Orders = orders };
         }
     }
 }

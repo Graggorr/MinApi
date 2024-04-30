@@ -9,6 +9,7 @@ namespace WebStore.Infrastructure
     {
         public WebStoreContext(DbContextOptions<WebStoreContext> options) : base(options)
         {
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 

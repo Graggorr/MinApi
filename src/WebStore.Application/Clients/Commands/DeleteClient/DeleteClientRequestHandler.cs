@@ -5,7 +5,7 @@ using WebStore.Domain;
 using WebStore.EventBus;
 using WebStore.Infrastructure.RabbitMq.Events;
 
-namespace WebStore.Application.Clients
+namespace WebStore.Application.Clients.Commands.DeleteClient
 {
     public class DeleteClientRequestHandler(IClientRepository repository, IEventBus eventBus) : IRequestHandler<DeleteClientHandlingRequest, Result<Client>>
     {

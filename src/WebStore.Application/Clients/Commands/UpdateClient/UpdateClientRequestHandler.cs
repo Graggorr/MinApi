@@ -5,9 +5,9 @@ using WebStore.Domain;
 using WebStore.EventBus;
 using WebStore.Infrastructure.RabbitMq.Events;
 
-namespace WebStore.Application.Clients
+namespace WebStore.Application.Clients.Commands.UpdateClient
 {
-    public class PutClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository, IEventBus eventBus) :
+    public class UpdateClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository, IEventBus eventBus) :
         IRequestHandler<PutClientHandlingRequest, Result<Client>>
     {
         private readonly IClientRepository _clientRepository = clientRepository;
@@ -16,28 +16,8 @@ namespace WebStore.Application.Clients
 
         public async Task<Result<Client>> Handle(PutClientHandlingRequest request, CancellationToken cancellationToken)
         {
-            var verifyPhoneNumber = false;
-            var verifyEmail = false;
-            var dto = request.Dto;
 
-            if (!string.IsNullOrEmpty(dto.PhoneNumber))
-            {
-                verifyPhoneNumber = true;
-            }
-
-            if (!string.IsNullOrEmpty(dto.Email))
-            {
-                verifyEmail = true;
-            }
-
-            var clientResult = await Client.CreateClientAsync(dto, _clientRepository, _orderRepository, verifyPhoneNumber, verifyEmail);
-
-            if (clientResult.IsFailed)
-            {
-                return Result.Fail(clientResult.Errors);
-            }
-
-            var client = clientResult.Value;
+            var client = (await Client.CreateClientAsync(request.Dto, _orderRepository)).Value;
             var integrationEvent = ClientEvent.CreateIntegrationEvent<ClientUpdatedEvent>(client);
 
             try

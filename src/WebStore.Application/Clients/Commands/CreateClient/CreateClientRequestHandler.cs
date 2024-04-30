@@ -1,37 +1,29 @@
 ﻿using FluentResults;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 using System.Transactions;
 using WebStore.Domain;
 using WebStore.EventBus;
 using WebStore.Infrastructure.RabbitMq.Events;
 
-namespace WebStore.Application.Clients
+namespace WebStore.Application.Clients.Commands.CreateClient
 {
-    public class PostClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository, IEventBus eventBus)
+    public class CreateClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository, IEventBus eventBus)
         : IRequestHandler<PostClientHandlingRequest, Result<Client>>
     {
-        private readonly IClientRepository _repository = clientRepository;
+        private readonly IClientRepository _clientRepository = clientRepository;
         private readonly IOrderRepository _orderRepository = orderRepository;
         private readonly IEventBus _eventBus = eventBus;
 
         public async Task<Result<Client>> Handle(PostClientHandlingRequest request, CancellationToken cancellationToken)
         {
-            var clientResult = await Client.CreateClientAsync(request.Dto, _repository, _orderRepository, true, true);
-
-            if (clientResult.IsFailed)
-            {
-                return Result.Fail(clientResult.Errors);
-            }
-
-            var client = clientResult.Value;
+            var client = (await Client.CreateClientAsync(request.Dto, _orderRepository)).Value;
             var integrationEvent = ClientEvent.CreateIntegrationEvent<ClientCreatedEvent>(client);
 
             try
             {
                 using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    Task.WaitAll([_repository.AddClientAsync(client), _eventBus.PublishAsync(integrationEvent)], cancellationToken);
+                    Task.WaitAll([_clientRepository.AddClientAsync(client), _eventBus.PublishAsync(integrationEvent)], cancellationToken);
                     transaction.Complete();
                 }
 
