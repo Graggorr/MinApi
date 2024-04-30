@@ -7,32 +7,25 @@ using WebStore.Infrastructure.RabbitMq.Events;
 
 namespace WebStore.Application.Clients.Commands.CreateClient
 {
-    public class CreateClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository, IEventBus eventBus)
-        : IRequestHandler<PostClientHandlingRequest, Result<Client>>
+    public class CreateClientRequestHandler(IClientRepository clientRepository, IEventBus eventBus)
+        : IRequestHandler<RegisterClientRequest, Result<Guid>>
     {
         private readonly IClientRepository _clientRepository = clientRepository;
-        private readonly IOrderRepository _orderRepository = orderRepository;
         private readonly IEventBus _eventBus = eventBus;
 
-        public async Task<Result<Client>> Handle(PostClientHandlingRequest request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(RegisterClientRequest request, CancellationToken cancellationToken)
         {
-            var client = (await Client.CreateClientAsync(request.Dto, _orderRepository)).Value;
+            await _clientRepository.IsEmailUniqueAsync(request.Email);
+            await _clientRepository.IsPhoneNumberUniqueAsync(request.PhoneNumber);
+
+            var client = new Client { Id = request.Id };
+
             var integrationEvent = ClientEvent.CreateIntegrationEvent<ClientCreatedEvent>(client);
 
-            try
-            {
-                using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-                {
-                    Task.WaitAll([_clientRepository.AddClientAsync(client), _eventBus.PublishAsync(integrationEvent)], cancellationToken);
-                    transaction.Complete();
-                }
+            await _eventBus.PublishAsync(integrationEvent);
 
-                return Result.Ok(client);
-            }
-            catch (Exception exception)
-            {
-                return Result.Fail($"Cannot handle {client.ToStringWithoutId()}. Exception: {exception.Message}");
-            }
+            return Result.Ok(client.Id);
+
         }
     }
 }

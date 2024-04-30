@@ -13,25 +13,24 @@ public static class Endpoints
 {
     public static IEndpointRouteBuilder MapClients(this IEndpointRouteBuilder builder)
     {
-        var group = builder.MapGroup("/client").WithTags("Clients");
+        var group = builder.MapGroup("/clients").WithTags("Clients");
 
         group.MapPost(string.Empty, PostClient);
-        group.MapGet(string.Empty, GetAllClients);
-        group.MapGet("/{id}", GetClient);
+        group.MapGet(string.Empty, GetPagedClients);
+        group.MapGet("/{id}", GetClient).WithName(nameof(GetClient));
         group.MapPut("/{id}", PutClient);
         group.MapDelete("/{id}", DeleteClient);
 
         return builder;
     }
 
-    private static async Task<Results<Ok<PostClientResponse>, BadRequest<string>>> PostClient(
-        [FromBody] PostClientRequestBody requestBody,
+    private static async Task<Results<CreatedAtRoute<PostClientResponse>, BadRequest<string>>> PostClient(
+        [FromBody] PostClientRequest request,
         [FromServices] IMediator mediator)
     {
-        var dto = new ClientDto(Guid.NewGuid(), requestBody.Name, requestBody.PhoneNumber, requestBody.Email, requestBody.Orders);
-        var request = new PostClientHandlingRequest(dto);
+        var dto = new RegisterClientRequest(Guid.NewGuid(), request.Name, request.PhoneNumber, request.Email);
 
-        var response = await mediator.Send(request);
+        var response = await mediator.Send(dto);
 
         if (response.IsFailed)
         {
@@ -40,15 +39,14 @@ public static class Endpoints
 
         var mappedResponse = new PostClientResponse(response.Value);
 
-        return TypedResults.Ok(mappedResponse);
+        return TypedResults.CreatedAtRoute(response, nameof(GetClient), response.Value.Id);
     }
 
     private static async Task<Results<Ok<PutClientResponse>, BadRequest<string>, NotFound>> PutClient(
        [AsParameters] PutClientRequest request,
-       [FromBody] PutClientRequestBody requestBody,
        [FromServices] IMediator mediator)
     {
-        var dto = new ClientDto(request.Id, requestBody.Name, requestBody.PhoneNumber, requestBody.Email, requestBody.Orders);
+        var dto = new ClientDto(request.Id, request.Body.Name, request.Body.PhoneNumber, request.Body.Email, request.Body.Orders);
         var handlingRequest = new PutClientHandlingRequest(dto);
 
         var response = await mediator.Send(handlingRequest);
@@ -108,7 +106,7 @@ public static class Endpoints
         return TypedResults.Ok(mappedResponse);
     }
 
-    private static async Task<Results<Ok<GetAllClientsResponse>, NotFound>> GetAllClients(
+    private static async Task<Results<Ok<GetAllClientsResponse>, NotFound>> GetPagedClients(
         [FromServices] IMediator mediator)
     {
         var response = await mediator.Send(new GetAllClientsHandlingRequest());

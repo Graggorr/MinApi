@@ -7,13 +7,13 @@ using WebStore.Domain;
 namespace WebStore.Application.Clients.Commands.CreateClient
 {
     public class CreateClientPipelineBehavior(IClientRepository clientRepository, IOrderRepository orderRepository,
-        IValidator<PostClientHandlingRequest> validator) : IPipelineBehavior<PostClientHandlingRequest, Result<Client>>
+        IValidator<RegisterClientRequest> validator) : IPipelineBehavior<RegisterClientRequest, Result<Guid>>
     {
         private readonly IClientRepository _clientRepository = clientRepository;
         private readonly IOrderRepository _orderRepository = orderRepository;
-        private readonly IValidator<PostClientHandlingRequest> _validator = validator;
+        private readonly IValidator<RegisterClientRequest> _validator = validator;
 
-        public async Task<Result<Client>> Handle(PostClientHandlingRequest request, RequestHandlerDelegate<Result<Client>> next, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(RegisterClientRequest request, RequestHandlerDelegate<Result<Guid>> next, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
@@ -25,7 +25,7 @@ namespace WebStore.Application.Clients.Commands.CreateClient
                 return Result.Fail(stringBuilder.ToString());
             }
 
-            var businessValidationResult = await _validator.BusinessValidationAsync(_clientRepository, _orderRepository, request.Dto);
+            var businessValidationResult = await _validator.BusinessValidationAsync(_clientRepository, _orderRepository, request.Id);
 
             if (businessValidationResult.IsFailed)
             {

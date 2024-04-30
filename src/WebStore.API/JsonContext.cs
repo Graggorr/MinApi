@@ -10,7 +10,7 @@ namespace WebStore.API
     UseStringEnumConverter = true,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
-    [JsonSerializable(typeof(PostClientRequestBody))]
+    [JsonSerializable(typeof(PostClientRequest))]
     [JsonSerializable(typeof(PostClientResponse))]
     [JsonSerializable(typeof(PutClientRequest))]
     [JsonSerializable(typeof(PutClientRequestBody))]

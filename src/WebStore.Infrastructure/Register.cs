@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebStore.Domain;
 using WebStore.EventBus;
@@ -10,12 +11,14 @@ namespace WebStore.Infrastructure
 {
     public static class Register
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddSingleton<IEventBus, EventBusRabbitMq>();
-            services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(configuration.GetConnectionString("sqlString")));
+
+            services.Configure<RabbitMqConfiguration>(configuration.GetSection(nameof(RabbitMqConfiguration)));
 
             return services;
         }

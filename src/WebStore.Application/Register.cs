@@ -16,18 +16,18 @@ public static class Register
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<IRequestHandler<PostClientHandlingRequest, Result<Client>>, CreateClientRequestHandler>();
-        services.AddScoped<IRequestHandler<GetClientHandlingRequest, Result<Client>>, GetClientRequestHandler>();
-        services.AddScoped<IRequestHandler<GetAllClientsHandlingRequest, Result<IEnumerable<Client>>>, GetAllClientsRequestHandler>();
-        services.AddScoped<IRequestHandler<DeleteClientHandlingRequest, Result<Client>>, DeleteClientRequestHandler>();
-        services.AddScoped<IRequestHandler<PutClientHandlingRequest, Result<Client>>, UpdateClientRequestHandler>();
-        services.AddScoped<IValidator<PostClientHandlingRequest>, CreateClientValidator>();
+        //services.AddScoped<IRequestHandler<RegisterClientRequest, Result<Client>>, CreateClientRequestHandler>();
+        //services.AddScoped<IRequestHandler<GetClientHandlingRequest, Result<Client>>, GetClientRequestHandler>();
+        //services.AddScoped<IRequestHandler<GetAllClientsHandlingRequest, Result<IEnumerable<Client>>>, GetAllClientsRequestHandler>();
+        //services.AddScoped<IRequestHandler<DeleteClientHandlingRequest, Result<Client>>, DeleteClientRequestHandler>();
+        //services.AddScoped<IRequestHandler<PutClientHandlingRequest, Result<Client>>, UpdateClientRequestHandler>();
+        services.AddScoped<IValidator<RegisterClientRequest>, CreateClientValidator>();
         services.AddScoped<IValidator<PutClientHandlingRequest>, UpdateClientValidator>();
         services.AddMediatR(config =>
         {
             config.Lifetime = ServiceLifetime.Scoped;
             config.RegisterServicesFromAssemblyContaining<CreateClientPipelineBehavior>();
-            config.AddBehavior<IPipelineBehavior<PostClientHandlingRequest, Result<Client>>, CreateClientPipelineBehavior>();
+            config.AddBehavior<IPipelineBehavior<RegisterClientRequest, Result<Client>>, CreateClientPipelineBehavior>();
         });
         //services.AddSingleton<ClientMapper>();
 
