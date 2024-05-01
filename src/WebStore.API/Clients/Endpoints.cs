@@ -39,15 +39,15 @@ public static class Endpoints
 
         var mappedResponse = new PostClientResponse(response.Value);
 
-        return TypedResults.CreatedAtRoute(response, nameof(GetClient), response.Value.Id);
+        return TypedResults.CreatedAtRoute(mappedResponse, nameof(GetClient), response.Value);
     }
 
     private static async Task<Results<Ok<PutClientResponse>, BadRequest<string>, NotFound>> PutClient(
        [AsParameters] PutClientRequest request,
        [FromServices] IMediator mediator)
     {
-        var dto = new ClientDto(request.Id, request.Body.Name, request.Body.PhoneNumber, request.Body.Email, request.Body.Orders);
-        var handlingRequest = new PutClientHandlingRequest(dto);
+        var dto = new RegisterClientRequest(request.Id, request.Body.Name, request.Body.PhoneNumber, request.Body.Email);
+        var handlingRequest = new UpdateClientRequest(dto);
 
         var response = await mediator.Send(handlingRequest);
 

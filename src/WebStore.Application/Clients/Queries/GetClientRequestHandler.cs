@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
 using WebStore.Domain;
+using WebStore.Infrastructure.Clients;
 
 namespace WebStore.Application.Clients.Queries
 {

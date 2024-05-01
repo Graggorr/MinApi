@@ -3,37 +3,27 @@ using MediatR;
 using System.Transactions;
 using WebStore.Domain;
 using WebStore.EventBus;
-using WebStore.Infrastructure.RabbitMq.Events;
+using WebStore.Infrastructure.Clients;
 
 namespace WebStore.Application.Clients.Commands.UpdateClient
 {
-    public class UpdateClientRequestHandler(IClientRepository clientRepository, IOrderRepository orderRepository, IEventBus eventBus) :
-        IRequestHandler<PutClientHandlingRequest, Result<Client>>
+    public class UpdateClientRequestHandler(IClientRepository clientRepository): IRequestHandler<UpdateClientRequest, Result<Client>>
     {
         private readonly IClientRepository _clientRepository = clientRepository;
-        private readonly IOrderRepository _orderRepository = orderRepository;
-        private readonly IEventBus _eventBus = eventBus;
 
-        public async Task<Result<Client>> Handle(PutClientHandlingRequest request, CancellationToken cancellationToken)
+        public async Task<Result<Client>> Handle(UpdateClientRequest request, CancellationToken cancellationToken)
         {
+            var dto = request.Dto;
+            var businessValidationResult = await ClientBusinessValidator.BusinessValidationAsync(_clientRepository, dto);
 
-            var client = (await Client.CreateClientAsync(request.Dto, _orderRepository)).Value;
-            var integrationEvent = ClientEvent.CreateIntegrationEvent<ClientUpdatedEvent>(client);
-
-            try
+            if (businessValidationResult.IsFailed)
             {
-                using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-                {
-                    Task.WaitAll([_clientRepository.UpdateClientAsync(client), _eventBus.PublishAsync(integrationEvent)], cancellationToken);
-                    transaction.Complete();
-                }
+                return businessValidationResult;
+            }
 
-                return Result.Ok(client);
-            }
-            catch (Exception exception)
-            {
-                return Result.Fail(exception.Message);
-            }
+            var client = new Client { Id = dto.Id, Name = dto.Name, Email = dto.Email, PhoneNumber = dto.PhoneNumber, Orders = [] };
+
+            return await _clientRepository.UpdateClientAsync(client);
         }
     }
 }

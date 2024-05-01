@@ -1,23 +1,13 @@
 ﻿using FluentResults;
-using FluentValidation;
-using WebStore.Domain;
+using WebStore.Application.Clients.Commands;
+using WebStore.Infrastructure.Clients;
 
-namespace WebStore.Application.Clients.Commands
+namespace WebStore.Application.Clients
 {
-    internal static class ValidatorExtensions
+    internal class ClientBusinessValidator
     {
-        public static async Task<Result> BusinessValidationAsync(this IValidator validator, IClientRepository clientRepository, IOrderRepository orderRepository, ClientDto client)
+        public static async Task<Result> BusinessValidationAsync(IClientRepository clientRepository, RegisterClientRequest client)
         {
-            foreach (var order in client.Orders)
-            {
-                var result = await orderRepository.GetOrderAsync(order.Id);
-
-                if (result.IsFailed)
-                {
-                    return Result.Fail(result.Errors);
-                }
-            }
-
             if (!await clientRepository.IsPhoneNumberUniqueAsync(client.PhoneNumber))
             {
                 var clientResult = await clientRepository.GetClientAsync(client.Id);

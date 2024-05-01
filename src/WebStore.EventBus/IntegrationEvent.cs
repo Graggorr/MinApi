@@ -8,4 +8,6 @@ public abstract class IntegrationEvent
     public abstract string RouteKey { get; }
     [JsonIgnore()]
     public abstract string QueueName { get; }
+    [JsonIgnore()]
+    public bool IsProcessed { get; set; } = false;
 }

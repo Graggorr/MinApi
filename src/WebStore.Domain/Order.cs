@@ -11,7 +11,7 @@ namespace WebStore.Domain
         public string Description { get; set; }
         public List<Client> Clients { get; set; }
 
-        public static async Task<Result<Order>> CreateOrderAsync(OrderSwaggerDto dto, IClientRepository clientRepository)
+        public static async Task<Result<Order>> CreateOrderAsync(OrderSwaggerDto dto)
         {
             return await Task.Factory.StartNew(() =>
             {

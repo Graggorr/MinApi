@@ -1,14 +1,9 @@
-﻿using FluentResults;
-using FluentValidation;
-using MediatR;
+﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+using WebStore.Application.Clients;
 using WebStore.Application.Clients.Commands;
 using WebStore.Application.Clients.Commands.CreateClient;
-using WebStore.Application.Clients.Commands.DeleteClient;
 using WebStore.Application.Clients.Commands.UpdateClient;
-using WebStore.Application.Clients.Queries;
-using WebStore.Domain;
 
 namespace WebStore.Application;
 
@@ -20,14 +15,14 @@ public static class Register
         //services.AddScoped<IRequestHandler<GetClientHandlingRequest, Result<Client>>, GetClientRequestHandler>();
         //services.AddScoped<IRequestHandler<GetAllClientsHandlingRequest, Result<IEnumerable<Client>>>, GetAllClientsRequestHandler>();
         //services.AddScoped<IRequestHandler<DeleteClientHandlingRequest, Result<Client>>, DeleteClientRequestHandler>();
-        //services.AddScoped<IRequestHandler<PutClientHandlingRequest, Result<Client>>, UpdateClientRequestHandler>();
+        //services.AddScoped<IRequestHandler<UpdateClientRequest, Result<Client>>, UpdateClientRequestHandler>();
         services.AddScoped<IValidator<RegisterClientRequest>, CreateClientValidator>();
-        services.AddScoped<IValidator<PutClientHandlingRequest>, UpdateClientValidator>();
+        services.AddScoped<IValidator<UpdateClientRequest>, UpdateClientValidator>();
         services.AddMediatR(config =>
         {
             config.Lifetime = ServiceLifetime.Scoped;
-            config.RegisterServicesFromAssemblyContaining<CreateClientPipelineBehavior>();
-            config.AddBehavior<IPipelineBehavior<RegisterClientRequest, Result<Client>>, CreateClientPipelineBehavior>();
+            config.RegisterServicesFromAssemblyContaining<ClientBusinessValidator>();
+            config.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
         });
         //services.AddSingleton<ClientMapper>();
 
