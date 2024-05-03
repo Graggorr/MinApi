@@ -5,7 +5,7 @@ using WebStore.Infrastructure.Clients;
 
 namespace WebStore.Application.Clients.Commands.CreateClient
 {
-    public class CreateClientRequestHandler(IClientRepository clientRepository): IRequestHandler<RegisterClientRequest, Result<Guid>>
+    public class CreateClientRequestHandler(IClientRepository clientRepository) : IRequestHandler<RegisterClientRequest, Result<Guid>>
     {
         private readonly IClientRepository _clientRepository = clientRepository;
 
@@ -20,7 +20,14 @@ namespace WebStore.Application.Clients.Commands.CreateClient
 
             var client = new Client { Id = request.Id, Email = request.Email, Name = request.Name, PhoneNumber = request.PhoneNumber, Orders = [] };
 
-            return await _clientRepository.AddClientAsync(client);
+            var result = await _clientRepository.AddClientAsync(client);
+
+            if (result.IsSuccess)
+            {
+                return Result.Ok(client.Id);
+            }
+
+            return result;
         }
     }
 }

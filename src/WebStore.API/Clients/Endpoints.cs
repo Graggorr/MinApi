@@ -39,7 +39,7 @@ public static class Endpoints
 
         var mappedResponse = new PostClientResponse(response.Value);
 
-        return TypedResults.CreatedAtRoute(mappedResponse, nameof(GetClient), response.Value);
+        return TypedResults.CreatedAtRoute(mappedResponse, nameof(GetClient), new {id = response.Value });
     }
 
     private static async Task<Results<Ok<PutClientResponse>, BadRequest<string>, NotFound>> PutClient(

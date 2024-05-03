@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using WebStore.Domain;
 using WebStore.Infrastructure.RabbitMq.Events;
 
 namespace WebStore.Infrastructure.Clients
@@ -19,7 +18,7 @@ namespace WebStore.Infrastructure.Clients
             builder.Property(e => e.Orders).HasColumnName("Orders").IsRequired();
             builder.Property(e => e.RouteKey).HasColumnName("RouteKey").IsRequired();
             builder.Property(e => e.QueueName).HasColumnName("QueueName").IsRequired();
-            builder.Property(e => e.IsProcessed).HasColumnName("IsProcessed");
+            builder.Property(e => e.IsProcessed).HasColumnName("IsProcessed").IsRequired();
         }
     }
 }

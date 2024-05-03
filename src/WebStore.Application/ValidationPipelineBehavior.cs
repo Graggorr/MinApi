@@ -4,27 +4,23 @@ using System.Text;
 
 namespace WebStore.Application
 {
-    public class ValidationPipelineBehavior<TRequest, TResponse>(IEnumerable<IValidator> validators)
-        : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest
+    public class ValidationPipelineBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
+        : IPipelineBehavior<TRequest, TResponse> where TRequest : IBaseRequest
     {
-        private readonly IEnumerable<IValidator> _validators = validators;
+        private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            var validator = _validators.FirstOrDefault(x => x.GetType().GenericTypeArguments.FirstOrDefault(y => y.Equals(typeof(TRequest))) != null);
+            var validationContext = new ValidationContext<TRequest>(request);
+            var validationResult = _validators.Select(v => v.Validate(validationContext)).SelectMany(result => result.Errors)
+                .Where(failure => failure != null).ToList();
 
-            if (validator != null)
+            if (validationResult != null && validationResult.Count != 0)
             {
-                var validationContext = new ValidationContext<TRequest>(request);
-                var validationResult = await validator.ValidateAsync(validationContext, cancellationToken);
+                var stringBuilder = new StringBuilder();
+                validationResult.ForEach(x => stringBuilder.AppendLine(x.ErrorMessage));
 
-                if (!validationResult.IsValid)
-                {
-                    var stringBuilder = new StringBuilder();
-                    validationResult.Errors.ForEach(x => stringBuilder.AppendLine(x.ErrorMessage));
-
-                    throw new ValidationException(stringBuilder.ToString());
-                }
+                throw new ValidationException(stringBuilder.ToString());
             }
 
             return await next();
