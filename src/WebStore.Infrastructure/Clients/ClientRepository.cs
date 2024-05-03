@@ -41,9 +41,21 @@ namespace WebStore.Infrastructure.Clients
 
                 entity.Orders.Clear();
                 entity.Orders.AddRange(client.Orders);
-                entity.Email = client.Email;
-                entity.PhoneNumber = client.PhoneNumber;
-                entity.Name = client.Name;
+
+                if (!string.IsNullOrEmpty(client.Email))
+                {
+                    entity.Email = client.Email;
+                }
+
+                if (!string.IsNullOrEmpty(client.PhoneNumber))
+                {
+                    entity.PhoneNumber = client.PhoneNumber;
+                }
+
+                if (!string.IsNullOrEmpty(client.Name))
+                {
+                    entity.Name = client.Name;
+                }
 
                 await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_updated"));
 
