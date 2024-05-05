@@ -5,7 +5,9 @@ namespace WebStore.EventBus;
 public abstract class IntegrationEvent
 {
     [JsonIgnore()]
-    public abstract string RouteKey { get; }
+    public string RouteKey { get; protected set; }
     [JsonIgnore()]
-    public abstract string QueueName { get; }
+    public string QueueName { get; protected set; }
+    [JsonIgnore()]
+    public bool IsProcessed { get; set; } = false;
 }

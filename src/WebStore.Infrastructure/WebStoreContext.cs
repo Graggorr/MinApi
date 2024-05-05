@@ -9,15 +9,18 @@ namespace WebStore.Infrastructure
     {
         public WebStoreContext(DbContextOptions<WebStoreContext> options) : base(options)
         {
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
         public DbSet<Client> Clients { get; set; }
+        public DbSet<ClientEvent> ClientEvents { get; set; }
         public DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ClientConfiguration());
+            modelBuilder.ApplyConfiguration(new ClientEventConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
 
             base.OnModelCreating(modelBuilder);

@@ -1,5 +1,5 @@
+using WebStore.API;
 using WebStore.API.Clients;
-using WebStore.API.Extensions;
 using WebStore.Application;
 using WebStore.Infrastructure;
 
@@ -11,20 +11,18 @@ builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
-builder.Services.AddWebStoreOptions();
+
+builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, JsonContext.Default));
+
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(configuration.GetConnectionString("sqlString"));
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebStore API");
-        c.RoutePrefix = "";
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseStaticFiles();

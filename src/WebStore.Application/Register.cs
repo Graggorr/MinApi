@@ -1,8 +1,6 @@
-﻿using FluentResults;
-using MediatR;
+﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using WebStore.Application.Clients;
-using WebStore.Domain;
+using System.Reflection;
 
 namespace WebStore.Application;
 
@@ -10,12 +8,15 @@ public static class Register
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<IRequestHandler<PostClientHandlingRequest, Result<Client>>, PostClientRequestHandler>();
-        services.AddScoped<IRequestHandler<GetClientHandlingRequest, Result<Client>>, GetClientRequestHandler>();
-        services.AddScoped<IRequestHandler<GetAllClientsHandlingRequest, Result<IEnumerable<Client>>>, GetAllClientsRequestHandler>();
-        services.AddScoped<IRequestHandler<DeleteClientHandlingRequest, Result<Client>>, DeleteClientRequestHandler>();
-        services.AddScoped<IRequestHandler<PutClientHandlingRequest, Result<Client>>, PutClientRequestHandler>();
-        //services.AddSingleton<ClientMapper>();
+        var assembly = Assembly.GetExecutingAssembly();
+
+        services.AddValidatorsFromAssembly(assembly);
+        services.AddMediatR(config =>
+        {
+            config.Lifetime = ServiceLifetime.Scoped;
+            config.RegisterServicesFromAssembly(assembly);
+            config.AddOpenBehavior(typeof(PipelineBehavior<,>));
+        });
 
         return services;
     }

@@ -1,14 +1,15 @@
-﻿using WebStore.Domain;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebStore.Domain;
 
 namespace WebStore.API.Clients;
 
 //Post
-public record PostClientRequestBody(string PhoneNumber, string Name, string Email, List<OrderSwaggerDto> Orders);
-public record PostClientResponse(Client Client); 
+public record PostClientRequest(string PhoneNumber, string Name, string Email);
+public record PostClientResponse(Guid Id);
 
 //Put
-public record PutClientRequest(Guid Id);
-public record PutClientRequestBody(string Name, string PhoneNumber, string Email, List<OrderSwaggerDto> Orders);
+public record PutClientRequest([FromRoute] Guid Id, [FromBody] PutClientRequestBody Body);
+public record PutClientRequestBody(string Name, string PhoneNumber, string Email);
 public record PutClientResponse(Client Client);
 
 //Delete
