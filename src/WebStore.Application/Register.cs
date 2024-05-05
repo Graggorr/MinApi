@@ -15,7 +15,7 @@ public static class Register
         {
             config.Lifetime = ServiceLifetime.Scoped;
             config.RegisterServicesFromAssembly(assembly);
-            config.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
+            config.AddOpenBehavior(typeof(PipelineBehavior<,>));
         });
 
         return services;

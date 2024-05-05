@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebStore.Domain;
 using WebStore.EventBus;
 using WebStore.Infrastructure.Clients;
 using WebStore.Infrastructure.Orders;
@@ -14,6 +15,7 @@ namespace WebStore.Infrastructure
         {
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IEventProcesser, EventProcesser<ClientEvent>>();
             services.AddSingleton<IEventBus, EventBusRabbitMq>();
             services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(configuration.GetConnectionString("sqlString")));
 

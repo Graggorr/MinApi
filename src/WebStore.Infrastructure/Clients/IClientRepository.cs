@@ -1,6 +1,5 @@
 ﻿using FluentResults;
 using WebStore.Domain;
-using WebStore.Infrastructure.RabbitMq.Events;
 
 namespace WebStore.Infrastructure.Clients
 {

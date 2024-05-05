@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using WebStore.Domain;
-using WebStore.Infrastructure.RabbitMq.Events;
 
 namespace WebStore.Infrastructure.Clients
 {
@@ -20,7 +19,6 @@ namespace WebStore.Infrastructure.Clients
                 await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_created"));
 
                 await _context.SaveChangesAsync();
-
                 await transaction.CommitAsync();
 
                 return Result.Ok();

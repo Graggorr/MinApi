@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using WebStore.Infrastructure.RabbitMq.Events;
+using WebStore.Domain;
 
 namespace WebStore.Infrastructure.Clients
 {

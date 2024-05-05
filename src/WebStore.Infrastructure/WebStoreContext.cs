@@ -2,7 +2,6 @@
 using WebStore.Domain;
 using WebStore.Infrastructure.Orders;
 using WebStore.Infrastructure.Clients;
-using WebStore.Infrastructure.RabbitMq.Events;
 
 namespace WebStore.Infrastructure
 {
