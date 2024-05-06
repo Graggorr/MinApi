@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WebStore.Domain\WebStore.Domain.csproj" />
-    <ProjectReference Include="..\WebStore.EventBus\WebStore.EventBus.csproj" />
   </ItemGroup>
 
 </Project>
