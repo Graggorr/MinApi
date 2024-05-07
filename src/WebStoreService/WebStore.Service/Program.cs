@@ -1,7 +1,11 @@
+using WebStore.RabbitMqEventHandling;
 using WebStore.Service;
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService<RabbitMqConsumer>();
+var services = builder.Services;
+
+services.AddRabbitMq();
+services.AddHostedService<HostedService>();
 
 var host = builder.Build();
 host.Run();

@@ -1,6 +1,6 @@
 ﻿using WebStore.EventBus;
 
-namespace WebStore.EventHandling.ClientRegistered
+namespace WebStore.RabbitMqEventHandling.ClientRegistered
 {
     public class CreatedClientEvent : IntegrationEvent
     {

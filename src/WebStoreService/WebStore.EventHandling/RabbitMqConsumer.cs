@@ -5,12 +5,11 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 using WebStore.EventBus;
-using WebStore.RabbitMqEventHandling;
 
-namespace WebStore.EventHandling.ClientRegistered
+namespace WebStore.RabbitMqEventHandling
 {
-    public class RegisteredClientEventConsumer<T>(IIntegrationEventHandler<T> eventHandler,
-        IOptions<RabbitMqConfiguration> configuration) : IConsumer where T: IntegrationEvent
+    public class RabbitMqConsumer<T>(IIntegrationEventHandler<T> eventHandler,
+        IOptions<RabbitMqConfiguration> configuration) : IConsumer where T : IntegrationEvent
     {
         private readonly IIntegrationEventHandler<T> _eventHandler = eventHandler;
         private readonly RabbitMqConfiguration _configuration = configuration.Value;
