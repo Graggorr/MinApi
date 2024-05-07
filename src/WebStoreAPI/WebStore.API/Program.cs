@@ -12,7 +12,7 @@ builder.Services.AddAuthentication();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
 
-builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, JsonContext.Default));
+//builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, JsonContext.Default));
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);

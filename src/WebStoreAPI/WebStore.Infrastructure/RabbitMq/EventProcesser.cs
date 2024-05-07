@@ -1,5 +1,4 @@
-﻿using System.Data.Entity;
-using WebStore.EventBus;
+﻿using WebStore.EventBus;
 
 namespace WebStore.Infrastructure.Clients
 {

@@ -11,9 +11,10 @@ namespace WebStore.Infrastructure.Clients
 
         public async Task<Result> AddClientAsync(Client client)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
-                using var transaction = await _context.Database.BeginTransactionAsync();
 
                 await _context.Clients.AddAsync(client);
                 await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_created"));
@@ -25,6 +26,8 @@ namespace WebStore.Infrastructure.Clients
             }
             catch (Exception exception)
             {
+                await transaction.RollbackAsync();
+
                 return Result.Fail(exception.Message);
             }
         }
@@ -32,11 +35,10 @@ namespace WebStore.Infrastructure.Clients
         public async Task<Result> UpdateClientAsync(Client client)
         {
             var entity = await _context.Clients.FindAsync(client.Id);
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                using var transaction = await _context.Database.BeginTransactionAsync();
-
                 entity.Orders.Clear();
                 entity.Orders.AddRange(client.Orders);
 
@@ -65,6 +67,8 @@ namespace WebStore.Infrastructure.Clients
             }
             catch (Exception exception)
             {
+                await transaction.RollbackAsync();
+
                 return Result.Fail(exception.Message);
             }
 
@@ -79,9 +83,10 @@ namespace WebStore.Infrastructure.Clients
                 return Result.Fail($"Client (ID:{id}) is not found");
             }
 
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
-                using var transaction = await _context.Database.BeginTransactionAsync();
                 _context.Clients.Remove(client);
                 await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_deleted"));
                 await _context.SaveChangesAsync();
@@ -92,6 +97,8 @@ namespace WebStore.Infrastructure.Clients
             }
             catch (Exception exception)
             {
+                await transaction.RollbackAsync();
+
                 return Result.Fail(exception.Message);
             }
         }
