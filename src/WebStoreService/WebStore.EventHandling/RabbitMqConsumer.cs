@@ -35,7 +35,7 @@ namespace WebStore.RabbitMqEventHandling
 
             var typeName = typeof(T).Name;
             var index = typeName.IndexOf("Client");
-            var queueName = $"client_{typeName.Remove(index)}";
+            var queueName = $"client_{typeName.Remove(index).ToLower()}";
 
             channel.BasicConsume(queueName, false, consumer);
 
