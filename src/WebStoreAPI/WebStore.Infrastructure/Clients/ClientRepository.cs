@@ -11,8 +11,6 @@ namespace WebStore.Infrastructure.Clients
 
         public async Task<Result> AddClientAsync(Client client)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
             try
             {
 
@@ -20,14 +18,11 @@ namespace WebStore.Infrastructure.Clients
                 await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_created"));
 
                 await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
 
                 return Result.Ok();
             }
             catch (Exception exception)
             {
-                await transaction.RollbackAsync();
-
                 return Result.Fail(exception.Message);
             }
         }
@@ -35,7 +30,6 @@ namespace WebStore.Infrastructure.Clients
         public async Task<Result> UpdateClientAsync(Client client)
         {
             var entity = await _context.Clients.FindAsync(client.Id);
-            using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
@@ -61,14 +55,10 @@ namespace WebStore.Infrastructure.Clients
 
                 await _context.SaveChangesAsync();
 
-                await transaction.CommitAsync();
-
                 return Result.Ok();
             }
             catch (Exception exception)
             {
-                await transaction.RollbackAsync();
-
                 return Result.Fail(exception.Message);
             }
 
@@ -83,22 +73,16 @@ namespace WebStore.Infrastructure.Clients
                 return Result.Fail($"Client (ID:{id}) is not found");
             }
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
             try
             {
                 _context.Clients.Remove(client);
                 await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_deleted"));
                 await _context.SaveChangesAsync();
 
-                await transaction.CommitAsync();
-
                 return Result.Ok(client);
             }
             catch (Exception exception)
             {
-                await transaction.RollbackAsync();
-
                 return Result.Fail(exception.Message);
             }
         }
