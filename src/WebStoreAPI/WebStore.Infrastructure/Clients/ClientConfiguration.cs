@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using WebStore.Domain;
+using WebStore.API.Domain;
 
-namespace WebStore.Infrastructure.Clients
+namespace WebStore.API.Infrastructure.Clients
 {
     public class ClientConfiguration : IEntityTypeConfiguration<Client>
     {

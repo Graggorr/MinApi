@@ -1,7 +1,6 @@
-using WebStore.API;
-using WebStore.API.Clients;
-using WebStore.Application;
-using WebStore.Infrastructure;
+using WebStore.API.Application;
+using WebStore.API.Infrastructure;
+using WebStore.API.Service.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

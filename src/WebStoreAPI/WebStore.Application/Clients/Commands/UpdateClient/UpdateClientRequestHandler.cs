@@ -1,13 +1,13 @@
 ﻿using FluentResults;
 using MediatR;
-using System.Transactions;
-using WebStore.Domain;
-using WebStore.EventBus;
-using WebStore.Infrastructure.Clients;
+using WebStore.API.Application.Clients;
+using WebStore.API.Application.Clients.Commands;
+using WebStore.API.Domain;
+using WebStore.API.Infrastructure.Clients;
 
-namespace WebStore.Application.Clients.Commands.UpdateClient
+namespace WebStore.API.Application.Clients.Commands.UpdateClient
 {
-    public class UpdateClientRequestHandler(IClientRepository clientRepository): IRequestHandler<UpdateClientRequest, Result<Client>>
+    public class UpdateClientRequestHandler(IClientRepository clientRepository) : IRequestHandler<UpdateClientRequest, Result<Client>>
     {
         private readonly IClientRepository _clientRepository = clientRepository;
 

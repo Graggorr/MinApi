@@ -1,9 +1,10 @@
 ﻿using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using WebStore.Domain;
+using WebStore.API.Domain;
+using WebStore.EventBus.Events;
 
-namespace WebStore.Infrastructure.Clients
+namespace WebStore.API.Infrastructure.Clients
 {
     public class ClientRepository(WebStoreContext context) : IClientRepository
     {
@@ -13,7 +14,6 @@ namespace WebStore.Infrastructure.Clients
         {
             try
             {
-
                 await _context.Clients.AddAsync(client);
                 await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_created"));
 
@@ -31,25 +31,19 @@ namespace WebStore.Infrastructure.Clients
         {
             var entity = await _context.Clients.FindAsync(client.Id);
 
+            if (entity is null)
+            {
+                return Result.Fail($"{client.Id} is not found");
+            }
+
             try
             {
                 entity.Orders.Clear();
                 entity.Orders.AddRange(client.Orders);
 
-                if (!string.IsNullOrEmpty(client.Email))
-                {
-                    entity.Email = client.Email;
-                }
-
-                if (!string.IsNullOrEmpty(client.PhoneNumber))
-                {
-                    entity.PhoneNumber = client.PhoneNumber;
-                }
-
-                if (!string.IsNullOrEmpty(client.Name))
-                {
-                    entity.Name = client.Name;
-                }
+                entity.Email = client.Email;
+                entity.PhoneNumber = client.PhoneNumber;
+                entity.Name = client.Name;
 
                 await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_updated"));
 
@@ -61,7 +55,6 @@ namespace WebStore.Infrastructure.Clients
             {
                 return Result.Fail(exception.Message);
             }
-
         }
 
         public async Task<Result<Client>> DeleteClientAsync(Guid id)
@@ -70,7 +63,7 @@ namespace WebStore.Infrastructure.Clients
 
             if (client is null)
             {
-                return Result.Fail($"Client (ID:{id}) is not found");
+                return Result.Fail($"{id} is not found");
             }
 
             try
@@ -96,7 +89,7 @@ namespace WebStore.Infrastructure.Clients
                 return Result.Ok(client);
             }
 
-            return Result.Fail(new Error($"{id} is not contained in the repository"));
+            return Result.Fail($"{id} is not found");
         }
 
         public async Task<bool> IsPhoneNumberUniqueAsync(string phoneNumber) => !await _context.Clients.AnyAsync(x => x.PhoneNumber.Equals(phoneNumber));

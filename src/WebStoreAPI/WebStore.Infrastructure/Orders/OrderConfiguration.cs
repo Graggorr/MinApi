@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using WebStore.Domain;
+using WebStore.API.Domain;
 
-namespace WebStore.Infrastructure.Orders
+namespace WebStore.API.Infrastructure.Orders
 {
     internal class OrderConfiguration : IEntityTypeConfiguration<Order>
     {

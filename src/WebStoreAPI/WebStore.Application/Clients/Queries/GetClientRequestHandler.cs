@@ -1,9 +1,9 @@
 ﻿using FluentResults;
 using MediatR;
-using WebStore.Domain;
-using WebStore.Infrastructure.Clients;
+using WebStore.API.Domain;
+using WebStore.API.Infrastructure.Clients;
 
-namespace WebStore.Application.Clients.Queries
+namespace WebStore.API.Application.Clients.Queries
 {
     public class GetClientRequestHandler(IClientRepository repository) : IRequestHandler<GetClientHandlingRequest, Result<Client>>
     {

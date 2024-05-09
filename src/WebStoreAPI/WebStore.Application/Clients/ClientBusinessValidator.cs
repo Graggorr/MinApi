@@ -1,9 +1,9 @@
 ﻿using FluentResults;
 using System.Text.RegularExpressions;
-using WebStore.Application.Clients.Commands;
-using WebStore.Infrastructure.Clients;
+using WebStore.API.Application.Clients.Commands;
+using WebStore.API.Infrastructure.Clients;
 
-namespace WebStore.Application.Clients
+namespace WebStore.API.Application.Clients
 {
     internal class ClientBusinessValidator
     {
@@ -12,7 +12,7 @@ namespace WebStore.Application.Clients
 
         public static async Task<Result> BusinessValidationAsync(IClientRepository clientRepository, RegisterClientRequest client)
         {
-            if(!Regex.IsMatch(client.PhoneNumber, PHONE_NUMBER_REGEX))
+            if (!Regex.IsMatch(client.PhoneNumber, PHONE_NUMBER_REGEX))
             {
                 return Result.Fail($"{client.PhoneNumber} is not valid. Valid example: +1234586890");
             }
@@ -28,7 +28,7 @@ namespace WebStore.Application.Clients
 
             }
 
-            if(!Regex.IsMatch(client.Email, EMAIL_REGEX, RegexOptions.IgnoreCase))
+            if (!Regex.IsMatch(client.Email, EMAIL_REGEX, RegexOptions.IgnoreCase))
             {
                 return Result.Fail($"{client.Email} is not valid. Valid example: sample1234@gmail.com");
             }

@@ -1,9 +1,9 @@
 ﻿using FluentResults;
 using MediatR;
-using WebStore.Domain;
-using WebStore.Infrastructure.Clients;
+using WebStore.API.Infrastructure.Clients;
+using WebStore.API.Domain;
 
-namespace WebStore.Application.Clients.Commands.CreateClient
+namespace WebStore.API.Application.Clients.Commands.CreateClient
 {
     public class CreateClientRequestHandler(IClientRepository clientRepository) : IRequestHandler<RegisterClientRequest, Result<Guid>>
     {

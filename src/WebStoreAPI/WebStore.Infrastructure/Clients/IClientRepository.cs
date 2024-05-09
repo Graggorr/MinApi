@@ -1,7 +1,7 @@
 ﻿using FluentResults;
-using WebStore.Domain;
+using WebStore.API.Domain;
 
-namespace WebStore.Infrastructure.Clients
+namespace WebStore.API.Infrastructure.Clients
 {
     public interface IClientRepository
     {

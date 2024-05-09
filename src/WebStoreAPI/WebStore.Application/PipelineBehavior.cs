@@ -1,16 +1,13 @@
-﻿using FluentResults;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using System.Text;
-using WebStore.Infrastructure;
 
-namespace WebStore.Application
+namespace WebStore.API.Application
 {
-    public class PipelineBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators, IEnumerable<IEventProcesser> eventProcessers)
+    public class PipelineBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
         : IPipelineBehavior<TRequest, TResponse> where TRequest : IBaseRequest
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
-        private readonly IEnumerable<IEventProcesser> _eventProcessers = eventProcessers;
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
@@ -26,18 +23,7 @@ namespace WebStore.Application
                 throw new ValidationException(stringBuilder.ToString());
             }
 
-            var requestResult = await next();
-            var result = requestResult.ToResult();
-
-            if (result.IsSuccess)
-            {
-                foreach (var eventProcesser in _eventProcessers)
-                {
-                    eventProcesser.CallProcessing();
-                }
-            }
-
-            return requestResult;
+            return await next();
         }
     }
 }

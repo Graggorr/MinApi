@@ -1,8 +1,9 @@
 ﻿using FluentResults;
 using Microsoft.EntityFrameworkCore;
-using WebStore.Domain;
+using WebStore.API.Domain;
+using WebStore.API.Infrastructure;
 
-namespace WebStore.Infrastructure.Orders
+namespace WebStore.API.Infrastructure.Orders
 {
     public class OrderRepository(WebStoreContext context) : IOrderRepository
     {

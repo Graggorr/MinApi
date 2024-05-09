@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebStore.Domain;
+using WebStore.API.Domain;
 
-namespace WebStore.API.Clients;
+namespace WebStore.API.Service.Clients;
 
 //Post
 public record PostClientRequest(string PhoneNumber, string Name, string Email);

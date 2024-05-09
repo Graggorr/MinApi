@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace WebStore.Application;
+namespace WebStore.API.Application;
 
 public static class Register
 {

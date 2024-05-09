@@ -1,9 +1,10 @@
 ﻿using FluentResults;
 using MediatR;
-using WebStore.Domain;
-using WebStore.Infrastructure.Clients;
+using WebStore.API.Application.Clients.Commands;
+using WebStore.API.Domain;
+using WebStore.API.Infrastructure.Clients;
 
-namespace WebStore.Application.Clients.Commands.DeleteClient
+namespace WebStore.API.Application.Clients.Commands.DeleteClient
 {
     public class DeleteClientRequestHandler(IClientRepository repository) : IRequestHandler<DeleteClientHandlingRequest, Result<Client>>
     {

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
+using WebStore.API.Application.Clients.Commands;
 
-namespace WebStore.Application.Clients.Commands.UpdateClient
+namespace WebStore.API.Application.Clients.Commands.UpdateClient
 {
     public sealed class UpdateClientValidator : AbstractValidator<UpdateClientRequest>
     {

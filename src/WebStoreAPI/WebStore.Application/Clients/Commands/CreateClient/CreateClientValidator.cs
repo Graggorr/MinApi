@@ -1,7 +1,8 @@
 ﻿using FluentResults;
 using FluentValidation;
+using WebStore.API.Application.Clients.Commands;
 
-namespace WebStore.Application.Clients.Commands.CreateClient
+namespace WebStore.API.Application.Clients.Commands.CreateClient
 {
     public sealed class CreateClientValidator : AbstractValidator<RegisterClientRequest>
     {

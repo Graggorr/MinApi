@@ -1,4 +1,4 @@
-﻿namespace WebStore.Domain
+﻿namespace WebStore.API.Domain
 {
     public class Client
     {

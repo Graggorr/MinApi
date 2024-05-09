@@ -1,6 +1,6 @@
-﻿using WebStore.Domain;
+﻿using WebStore.API.Domain;
 
-namespace WebStore.API.Orders;
+namespace WebStore.API.Service.Orders;
 
 //Post
 public record PostOrderRequest(string Name, string Description, double Price);

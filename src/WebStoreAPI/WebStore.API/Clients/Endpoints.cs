@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using WebStore.Domain;
 using System.Text;
 using FluentResults;
 using MediatR;
-using WebStore.Application.Clients.Queries;
-using WebStore.Application.Clients.Commands;
+using WebStore.API.Application.Clients.Queries;
+using WebStore.API.Application.Clients.Commands;
 
-namespace WebStore.API.Clients;
+namespace WebStore.API.Service.Clients;
 
 public static class Endpoints
 {
@@ -39,7 +38,7 @@ public static class Endpoints
 
         var mappedResponse = new PostClientResponse(response.Value);
 
-        return TypedResults.CreatedAtRoute(mappedResponse, nameof(GetClient), new {id = response.Value });
+        return TypedResults.CreatedAtRoute(mappedResponse, nameof(GetClient), new { id = response.Value });
     }
 
     private static async Task<Results<Ok<PutClientResponse>, BadRequest<string>, NotFound>> PutClient(

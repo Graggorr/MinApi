@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WebStore.Domain;
-using WebStore.Infrastructure.Orders;
-using WebStore.Infrastructure.Clients;
+using WebStore.API.Infrastructure.Orders;
+using WebStore.API.Infrastructure.Clients;
+using WebStore.EventBus.Events;
+using WebStore.API.Domain;
 
-namespace WebStore.Infrastructure
+namespace WebStore.API.Infrastructure
 {
     public class WebStoreContext : DbContext
     {

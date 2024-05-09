@@ -1,7 +1,7 @@
 ﻿using FluentResults;
-using WebStore.Domain;
+using WebStore.API.Domain;
 
-namespace WebStore.Infrastructure.Orders
+namespace WebStore.API.Infrastructure.Orders
 {
     public interface IOrderRepository
     {
