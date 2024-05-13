@@ -13,6 +13,7 @@ namespace WebStore.EventBus.Events
             Orders = orders;
             RouteKey = routeKey;
             QueueName = queueName;
+            CreationTimeUtc = DateTime.UtcNow;
         }
 
         public string ClientId { get; }
@@ -20,5 +21,6 @@ namespace WebStore.EventBus.Events
         public string PhoneNumber { get; }
         public string Email { get; }
         public string Orders { get; }
+        public DateTime CreationTimeUtc { get; }
     }
 }
