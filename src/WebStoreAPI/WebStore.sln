@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.EventBus.Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.EventBus.Events", "..\..\NuGet\WebStore.EventBus.Events\WebStore.EventBus.Events.csproj", "{5AD57157-A219-4765-82D9-6F771B690334}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebStore.EventBus.BackgroundJobService", "..\WebStoreBus\WebStore.EventBus.BackgroundJobService\WebStore.EventBus.BackgroundJobService.csproj", "{202297C3-0970-43ED-9FC5-AD127E0E6FBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{5AD57157-A219-4765-82D9-6F771B690334}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AD57157-A219-4765-82D9-6F771B690334}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AD57157-A219-4765-82D9-6F771B690334}.Release|Any CPU.Build.0 = Release|Any CPU
+		{202297C3-0970-43ED-9FC5-AD127E0E6FBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{202297C3-0970-43ED-9FC5-AD127E0E6FBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{202297C3-0970-43ED-9FC5-AD127E0E6FBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{202297C3-0970-43ED-9FC5-AD127E0E6FBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,6 +110,7 @@ Global
 		{D2280D7F-D4C8-4CF4-9499-AC1790299985} = {39D5B2FF-FF99-4F8E-BFD1-9A4921599255}
 		{9896A16A-11ED-4EC4-9AA0-5BC5D1055C4F} = {39D5B2FF-FF99-4F8E-BFD1-9A4921599255}
 		{5AD57157-A219-4765-82D9-6F771B690334} = {95B5A9FF-9228-432F-804A-CF60E7EADAE9}
+		{202297C3-0970-43ED-9FC5-AD127E0E6FBD} = {39D5B2FF-FF99-4F8E-BFD1-9A4921599255}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB7EB8A6-2496-4380-A18A-6E0663C3378A}
