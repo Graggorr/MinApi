@@ -8,9 +8,8 @@ namespace WebStore.EventBus.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            var optionsBuilder = new DbContextOptionsBuilder();
-            
-            services.AddTransient<DbContextOptions>();
+            services.AddDbContext<WebStoreEventContext>(options => options.UseSqlServer(configuration.GetConnectionString("WebstoreDb")));
+
 
             return services;
         }

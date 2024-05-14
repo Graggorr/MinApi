@@ -1,6 +1,4 @@
-﻿using FluentResults;
-using FluentValidation;
-using WebStore.API.Application.Clients.Commands;
+﻿using FluentValidation;
 
 namespace WebStore.API.Application.Clients.Commands.CreateClient
 {

@@ -11,19 +11,21 @@ namespace WebStore.EventBus.Abstraction
             var eventBusType = typeof(IEventBus);
             var consumerType = typeof(IConsumer);
             var eventHandlerType = typeof(IIntegrationEventHandler<>);
+            var integrationEventType = typeof(IntegrationEvent);
+            var assemblyTypes = assembly.GetTypes();
 
-            var eventHandlers = assembly.GetTypes().Where(x => x.GetInterfaces().Contains(eventHandlerType)).ToList();
-            var integrationEvents = assembly.GetTypes().Where(x => x.GetInterfaces().Contains(typeof(IntegrationEvent))).ToList();
-            var eventBuses = assembly.GetTypes().Where(x => x.GetInterfaces().Contains(eventBusType));
-            var consumer = assembly.GetTypes().FirstOrDefault(x => x.GetInterfaces().Contains(consumerType));
+            var eventHandlers = assemblyTypes.Where(x => x.GetInterface(eventHandlerType.Name) is not null).ToList();
+            var integrationEvents = assemblyTypes.Where(x => x.GetBaseType(integrationEventType.Name) is not null).ToList();
+            var eventBuses = assemblyTypes.Where(x => x.GetInterface(eventBusType.Name) is not null).ToList();
+            var consumer = assemblyTypes.FirstOrDefault(x => x.GetInterface(consumerType.Name) is not null);
 
             if (consumer != null)
             {
-                var consumers = new Type[] { consumerType, consumer };
+                var consumers = new TypeContainer(consumerType, consumer);
 
-                for (var i = 0; i < integrationEvents.Count || i < eventHandlers.Count; i++)
+                for (var i = 0; i < integrationEvents.Count && i < eventHandlers.Count; i++)
                 {
-                    services.AddConsumerAndEventHandler(consumers, [eventHandlerType, eventHandlers[i]], integrationEvents[i], lifetime);
+                    services.AddConsumerAndEventHandler(consumers, new(eventHandlerType, eventHandlers[i]), integrationEvents[i], lifetime);
                 }
             }
 
@@ -35,16 +37,41 @@ namespace WebStore.EventBus.Abstraction
             return services;
         }
 
-        private static IServiceCollection AddConsumerAndEventHandler(this IServiceCollection services, Type[] consumerTypes,
-            Type[] eventHandlerTypes, Type integrationEventType, ServiceLifetime lifetime)
+        private static IServiceCollection AddConsumerAndEventHandler(this IServiceCollection services, TypeContainer consumer,
+            TypeContainer eventHandler, Type integrationEventType, ServiceLifetime lifetime)
         {
-            var genericEventHandlerType = eventHandlerTypes[1].MakeGenericType(integrationEventType);
-            var genericConsumerHandlerType = consumerTypes[1].MakeGenericType(integrationEventType);
+            eventHandler.Service = eventHandler.Service.MakeGenericType(integrationEventType);
+            consumer.Implementation = consumer.Implementation.MakeGenericType(integrationEventType);
 
-            services.Add(new(eventHandlerTypes[0], genericEventHandlerType, lifetime));
-            services.Add(new(consumerTypes[0], genericConsumerHandlerType, lifetime));
+            services.Add(new(eventHandler.Service, eventHandler.Implementation, lifetime));
+            services.Add(new(consumer.Service, consumer.Implementation, lifetime));
 
             return services;
+        }
+
+        private static Type? GetBaseType(this Type type, string name)
+        {
+            Type? typeToReturn = null;
+            var tempType = type;
+
+            while (typeToReturn is null && tempType is not null)
+            {
+                tempType = tempType.BaseType;
+
+                if (tempType is not null && tempType.Name.Equals(name))
+                {
+                    typeToReturn = tempType;
+                }
+
+            }
+
+            return typeToReturn;
+        }
+
+        private class TypeContainer(Type service, Type implementation)
+        {
+            public Type Service { get; set; } = service;
+            public Type Implementation { get; set; } = implementation;
         }
     }
 }

@@ -3,5 +3,13 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "15672:15672" # Management UI
-      - "5672:5672"   # Default RabbitMQ Port
+      - "15672:15672"
+      - "5672:5672"
+  database:
+    container_name: sqlserver
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    ports:
+        - "1433:1433"
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=Pass@word

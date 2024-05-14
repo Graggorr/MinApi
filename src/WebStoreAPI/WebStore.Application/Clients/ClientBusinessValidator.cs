@@ -14,7 +14,7 @@ namespace WebStore.API.Application.Clients
         {
             if (!Regex.IsMatch(client.PhoneNumber, PHONE_NUMBER_REGEX))
             {
-                return Result.Fail($"{client.PhoneNumber} is not valid. Valid example: +1234586890");
+                return Result.Fail($"{client.PhoneNumber} is not valid. Valid example: 1234567890");
             }
 
             if (!await clientRepository.IsPhoneNumberUniqueAsync(client.PhoneNumber))

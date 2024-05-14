@@ -12,7 +12,7 @@ namespace WebStore.API.Infrastructure
         {
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
-            services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(configuration.GetConnectionString("sqlString")));
+            services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(configuration.GetConnectionString("WebstoreDb")));
 
             return services;
         }

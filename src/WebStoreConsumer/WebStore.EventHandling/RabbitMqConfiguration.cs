@@ -1,4 +1,15 @@
-﻿namespace WebStore.Consumer.RabbitMq
+﻿using RabbitMQ.Client;
+
+namespace WebStore.Consumer.RabbitMq
 {
-    public record class RabbitMqConfiguration(string HostName, string Password);
+    public class RabbitMqConfiguration()
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string HostName { get; set; }
+        public int Port { get; set; }
+        public string VirtualHost { get; set; }
+        public bool AutomaticRecoveryEnabled { get; set; }
+        public SslOption SslOption { get; set; }
+    }
 }

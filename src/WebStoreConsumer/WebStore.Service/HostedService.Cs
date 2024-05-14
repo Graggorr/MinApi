@@ -2,16 +2,24 @@
 
 namespace WebStore.Service
 {
-    public class HostedService(IEnumerable<IConsumer> consumers) : BackgroundService
+    public class HostedService(IEnumerable<IConsumer> consumers) : IHostedService
     {
         private readonly IEnumerable<IConsumer> _consumers = consumers;
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            foreach (var consumer in _consumers)
+            await Task.Factory.StartNew(() =>
             {
-                await Task.Factory.StartNew(consumer.Consume, stoppingToken);
-            }
+                foreach (var consumer in _consumers)
+                {
+                    consumer.Consume();
+                }
+            }, cancellationToken);
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }

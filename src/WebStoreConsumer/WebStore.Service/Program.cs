@@ -4,7 +4,7 @@ using WebStore.Service;
 var builder = Host.CreateApplicationBuilder(args);
 var services = builder.Services;
 
-services.AddRabbitMq();
+services.AddRabbitMq(builder.Configuration);
 services.AddHostedService<HostedService>();
 
 var host = builder.Build();

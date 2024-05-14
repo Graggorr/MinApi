@@ -8,8 +8,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
 		<PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
-		<PackageReference Include="WebStore.EventBus.Abstraction" Version="1.0.5" />
+		<PackageReference Include="WebStore.EventBus.Abstraction" Version="1.1.5.7" />
 		<PackageReference Include="WebStore.EventBus.Events" Version="1.0.5" />
 	</ItemGroup>
 

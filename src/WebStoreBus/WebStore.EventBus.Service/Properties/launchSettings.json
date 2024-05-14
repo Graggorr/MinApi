@@ -3,10 +3,13 @@
   "profiles": {
     "WebStore.EventBus.Service": {
       "commandName": "Project",
+      "applicationUrl": "http://localhost:8082",
       "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
-      }
+      },
+      "launchBrowser": true,
+      "launchUrl": "dashboard"
     }
   }
 }

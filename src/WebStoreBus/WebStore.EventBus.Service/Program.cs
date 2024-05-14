@@ -1,11 +1,21 @@
+using Hangfire;
 using WebStore.EventBus.BackgroundJobService;
+using WebStore.EventBus.Infrastructure;
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
+services.AddEndpointsApiExplorer();
+services.AddLogging();
+
+services.AddInfrastructure(builder.Configuration);
 services.AddBackgroundJobs(builder.Configuration);
 
-var host = builder.Build();
+var app = builder.Build();
 
-host.RunBackgroundJobs();
-host.Run();
+app.MapHangfireDashboard("/dashboard");
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.RunBackgroundJobs();
+app.Run();

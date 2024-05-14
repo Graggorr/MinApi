@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
 		<PackageReference Include="RabbitMQ.Client.Core.DependencyInjection" Version="5.0.0" />
-		<PackageReference Include="WebStore.EventBus.Abstraction" Version="1.0.5" />
+		<PackageReference Include="WebStore.EventBus.Abstraction" Version="1.1.5.7" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
 	</ItemGroup>
 
