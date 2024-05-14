@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+        - "15672:15672"
+        - "5672:5672"
+  database:
+    container_name: sqlserver
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    ports:
+        - "1433:1433"
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=Pass@word
+  webstore.api.service:
+    container_name: api
+    image: ${DOCKER_REGISTRY-}webstoreapiservice
+    build:
+      context: .
+      dockerfile: src/WebStoreAPI/WebStore.API/Dockerfile
+  webstore.eventbus.service:
+    container_name: eventbus
+    image: ${DOCKER_REGISTRY-}webstoreeventbusservice
+    build:
+      context: .
+      dockerfile: src/WebStoreBus/WebStore.EventBus.Service/Dockerfile
+  webstore.consumer.service:
+    container_name: consumer
+    image: ${DOCKER_REGISTRY-}webstoreconsumerservice
+    build:
+      context: .
+      dockerfile: src/WebStoreConsumer/WebStore.Service/Dockerfile
+x-project_name: webstore

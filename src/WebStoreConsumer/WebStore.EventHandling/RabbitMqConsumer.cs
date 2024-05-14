@@ -16,7 +16,7 @@ namespace WebStore.Consumer.RabbitMq
 
         public Result Consume()
         {
-            var connection = new ConnectionFactory { HostName = _configuration.HostName }.CreateConnection();
+            var connection = new ConnectionFactory { HostName = _configuration.HostName, Port = _configuration.Port }.CreateConnection();
             var channel = connection.CreateModel();
 
             var consumer = new AsyncEventingBasicConsumer(channel);

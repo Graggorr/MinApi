@@ -17,7 +17,7 @@ namespace WebStore.EventBus.RabbitMq
         public EventBusRabbitMq(IOptions<RabbitMqConfiguration> options)
         {
             _configuration = options.Value;
-            _connection = new ConnectionFactory() { HostName = _configuration.HostName }.CreateConnection();
+            _connection = new ConnectionFactory() { HostName = _configuration.HostName, Port = _configuration.Port }.CreateConnection();
             _channel = _connection.CreateModel();
         }
 
