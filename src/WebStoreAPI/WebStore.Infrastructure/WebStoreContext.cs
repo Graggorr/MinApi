@@ -6,14 +6,8 @@ using WebStore.API.Domain;
 
 namespace WebStore.API.Infrastructure
 {
-    public class WebStoreContext : DbContext
+    public class WebStoreContext(DbContextOptions<WebStoreContext> options) : DbContext(options)
     {
-        public WebStoreContext(DbContextOptions<WebStoreContext> options) : base(options)
-        {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
-        }
-
         public DbSet<Client> Clients { get; set; }
         public DbSet<ClientEvent> ClientEvents { get; set; }
         public DbSet<Order> Orders { get; set; }

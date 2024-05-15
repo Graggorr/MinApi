@@ -15,8 +15,8 @@ public static class Endpoints
         var group = builder.MapGroup("/clients").WithTags("Clients");
 
         group.MapPost(string.Empty, PostClient);
-        group.MapGet(string.Empty, GetPagedClients);
-        group.MapGet("/{id}", GetClient).WithName(nameof(GetClient));
+        group.MapGet("/{page: int}", GetPaginatedClients);
+        group.MapGet("/{id: guid}", GetClient).WithName(nameof(GetClient));
         group.MapPut("/{id}", PutClient);
         group.MapDelete("/{id}", DeleteClient);
 
@@ -105,17 +105,18 @@ public static class Endpoints
         return TypedResults.Ok(mappedResponse);
     }
 
-    private static async Task<Results<Ok<GetAllClientsResponse>, NotFound>> GetPagedClients(
+    private static async Task<Results<Ok<GetPaginatedClientsResponse>, NotFound>> GetPaginatedClients(
+        [AsParameters] GetPaginatedClientsRequest request,
         [FromServices] IMediator mediator)
     {
-        var response = await mediator.Send(new GetAllClientsHandlingRequest());
+        var response = await mediator.Send(new Application.Clients.Queries.GetPaginatedClientsRequest(request.Page));
 
         if (response.IsFailed)
         {
             TypedResults.NotFound();
         }
 
-        var mappedResponse = new GetAllClientsResponse(response.Value.ToList());
+        var mappedResponse = new GetPaginatedClientsResponse(response.Value.ToList());
 
         return TypedResults.Ok(mappedResponse);
     }

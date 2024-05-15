@@ -1,24 +1,25 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Dapper;
+using System.Data;
 using Microsoft.Extensions.Logging;
-using System.Transactions;
 using WebStore.EventBus.Abstraction;
-using WebStore.EventBus.Infrastructure;
+using WebStore.EventBus.Events;
 
 namespace WebStore.EventBus.BackgroundJobService
 {
-    public class BackgroundJobProcesser(IEventBus eventBus, ILogger<IBackgroundJobProcesser> logger, IServiceScopeFactory scopeFactory)
+    public class BackgroundJobProcesser(IEventBus eventBus, IDbConnection dbConnection, ILogger<IBackgroundJobProcesser> logger)
         : IBackgroundJobProcesser
     {
         private readonly IEventBus _eventBus = eventBus;
         private readonly ILogger _logger = logger;
-        private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
+        private readonly IDbConnection _dbConnection = dbConnection;
+        private const string QUERY = @"
+            SELECT *
+            FROM ClientEvent
+            WHERE IsProcessed = 0";
 
         public async Task ProcessEvents()
         {
-            using var scope = _scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetRequiredService<WebStoreEventContext>();
-
-            var events = context.ClientEvents.Where(x => !x.IsProcessed);
+            var events = await _dbConnection.QueryAsync<ClientEvent>(QUERY);
 
             foreach (var clientEvent in events)
             {
@@ -28,9 +29,13 @@ namespace WebStore.EventBus.BackgroundJobService
 
                     if (result.IsSuccess)
                     {
+                        using var transaction = _dbConnection.BeginTransaction();
                         clientEvent.IsProcessed = true;
+                        var operation = @"UPDATE ClientEvent SET IsProcessed = @IsProcessed WHERE Id = @Id";
 
-                        await context.SaveChangesAsync();
+                        await _dbConnection.ExecuteAsync(operation, clientEvent, transaction);
+
+                        transaction.Commit();
                     }
                 }
                 catch (Exception exception)

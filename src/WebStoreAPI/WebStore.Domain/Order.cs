@@ -1,7 +1,4 @@
-﻿using FluentResults;
-using System.ComponentModel.DataAnnotations;
-
-namespace WebStore.API.Domain
+﻿namespace WebStore.API.Domain
 {
     public class Order
     {

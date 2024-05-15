@@ -10,7 +10,6 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/WebStoreBus/WebStore.EventBus.Service/WebStore.EventBus.Service.csproj", "src/WebStoreBus/WebStore.EventBus.Service/"]
 COPY ["src/WebStoreBus/WebStore.EventBus.BackgroundJobService/WebStore.EventBus.BackgroundJobService.csproj", "src/WebStoreBus/WebStore.EventBus.BackgroundJobService/"]
-COPY ["src/WebStoreBus/WebStore.EventBus.Infrastructure/WebStore.EventBus.Infrastructure.csproj", "src/WebStoreBus/WebStore.EventBus.Infrastructure/"]
 COPY ["src/WebStoreBus/WebStore.EventBus.RabbitMq/WebStore.EventBus.RabbitMq.csproj", "src/WebStoreBus/WebStore.EventBus.RabbitMq/"]
 RUN dotnet restore "./src/WebStoreBus/WebStore.EventBus.Service/./WebStore.EventBus.Service.csproj"
 COPY . .

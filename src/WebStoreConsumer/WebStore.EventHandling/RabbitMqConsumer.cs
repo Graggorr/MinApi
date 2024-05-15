@@ -11,12 +11,14 @@ namespace WebStore.Consumer.RabbitMq
     public class RabbitMqConsumer<T>(IIntegrationEventHandler<T> eventHandler,
         IOptions<RabbitMqConfiguration> configuration) : IConsumer where T : IntegrationEvent
     {
+        private const string EXCHANGE_NAME = "webstore_event_bus";
+
         private readonly IIntegrationEventHandler<T> _eventHandler = eventHandler;
         private readonly RabbitMqConfiguration _configuration = configuration.Value;
 
         public Result Consume()
         {
-            var connection = new ConnectionFactory { HostName = _configuration.HostName, Port = _configuration.Port }.CreateConnection();
+            var connection = new ConnectionFactory { HostName = _configuration.HostName }.CreateConnection();
             var channel = connection.CreateModel();
 
             var consumer = new AsyncEventingBasicConsumer(channel);
@@ -37,9 +39,17 @@ namespace WebStore.Consumer.RabbitMq
             var index = typeName.IndexOf("Client");
             var queueName = $"client_{typeName.Remove(index).ToLower()}";
 
+            PrepareQueue(channel, queueName);
             channel.BasicConsume(queueName, false, consumer);
 
             return Result.Ok();
+        }
+
+        private static void PrepareQueue(IModel channel, string queueName)
+        {
+            channel.ExchangeDeclare(EXCHANGE_NAME, "direct", true, false, null);
+            channel.QueueDeclare(queueName, true, false, false, null);
+            channel.QueueBind(queueName, EXCHANGE_NAME, "users/players/customers");
         }
     }
 }

@@ -1,30 +1,25 @@
 ﻿using FluentResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using WebStore.API.Domain;
 using WebStore.EventBus.Events;
 
 namespace WebStore.API.Infrastructure.Clients
 {
-    public class ClientRepository(WebStoreContext context) : IClientRepository
+    public class ClientRepository(WebStoreContext context, ILogger<IClientRepository> logger) : IClientRepository
     {
         private readonly WebStoreContext _context = context;
+        private readonly ILogger _logger = logger;
 
-        public async Task<Result> AddClientAsync(Client client)
+        public async Task AddClientAsync(Client client)
         {
-            try
-            {
-                await _context.Clients.AddAsync(client);
-                await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_created"));
+            _context.Clients.Add(client);
+            _context.ClientEvents.Add(CreateClientEvent(client, "client_created"));
 
-                await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-                return Result.Ok();
-            }
-            catch (Exception exception)
-            {
-                return Result.Fail(exception.Message);
-            }
+            _logger.LogInformation($"A new client has been added:\n{JsonSerializer.Serialize(client)}");
         }
 
         public async Task<Result> UpdateClientAsync(Client client)
@@ -33,28 +28,24 @@ namespace WebStore.API.Infrastructure.Clients
 
             if (entity is null)
             {
-                return Result.Fail($"{client.Id} is not found");
+                var message = $"Client ({client.Id}) is not found";
+
+                return LogAndSendFail(message);
             }
 
-            try
-            {
-                entity.Orders.Clear();
-                entity.Orders.AddRange(client.Orders);
+            entity.Orders.Clear();
 
-                entity.Email = client.Email;
-                entity.PhoneNumber = client.PhoneNumber;
-                entity.Name = client.Name;
+            entity.Email = client.Email;
+            entity.PhoneNumber = client.PhoneNumber;
+            entity.Name = client.Name;
+            entity.Orders.AddRange(client.Orders);
 
-                await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_updated"));
+            await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_updated"));
+            await _context.SaveChangesAsync();
 
-                await _context.SaveChangesAsync();
+            _logger.LogInformation($"Client ({entity.Id}) has been updated. New statement:\n{JsonSerializer.Serialize(entity)}");
 
-                return Result.Ok();
-            }
-            catch (Exception exception)
-            {
-                return Result.Fail(exception.Message);
-            }
+            return Result.Ok();
         }
 
         public async Task<Result<Client>> DeleteClientAsync(Guid id)
@@ -63,40 +54,56 @@ namespace WebStore.API.Infrastructure.Clients
 
             if (client is null)
             {
-                return Result.Fail($"{id} is not found");
+                var message = $"Client ({id}) is not found";
+
+                return LogAndSendFail(message);
             }
 
-            try
-            {
-                _context.Clients.Remove(client);
-                await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_deleted"));
-                await _context.SaveChangesAsync();
+            _context.Clients.Remove(client);
 
-                return Result.Ok(client);
-            }
-            catch (Exception exception)
-            {
-                return Result.Fail(exception.Message);
-            }
+            await _context.ClientEvents.AddAsync(CreateClientEvent(client, "client_deleted"));
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Client ({id}) has been deleted:\n{JsonSerializer.Serialize(client)}");
+
+            return Result.Ok(client);
         }
 
         public async Task<Result<Client>> GetClientAsync(Guid id)
         {
             var client = await _context.Clients.FindAsync(id);
 
-            if (client is not null)
+            if (client is null)
             {
-                return Result.Ok(client);
+                var message = $"{id} is not found";
+
+                return LogAndSendFail(message);
             }
 
-            return Result.Fail($"{id} is not found");
+            return Result.Ok(client);
         }
 
-        public async Task<bool> IsPhoneNumberUniqueAsync(string phoneNumber) => !await _context.Clients.AnyAsync(x => x.PhoneNumber.Equals(phoneNumber));
-        public async Task<bool> IsEmailUniqueAsync(string email) => !await _context.Clients.AnyAsync(x => x.Email.Equals(email));
-        public async Task<Result<IEnumerable<Client>>> GetAllClientsAsync() => Result.Ok(await _context.Clients.ToListAsync() as IEnumerable<Client>);
+        public Result<IEnumerable<Client>> GetPaginatedClients(int page)
+        {
+            const int pageSize = 25;
+            var clients = _context.Clients.Skip(page * pageSize).Take(pageSize);
+
+            return Result.Ok(clients.AsEnumerable());
+        }
+
+        public async Task<bool> IsPhoneNumberUniqueAsync(string phoneNumber)
+            => !await _context.Clients.AnyAsync(x => x.PhoneNumber.Equals(phoneNumber));
+        public async Task<bool> IsEmailUniqueAsync(string email)
+            => !await _context.Clients.AnyAsync(x => x.Email.Equals(email));
 
         private static ClientEvent CreateClientEvent(Client client, string queueName) => new(client.Id.ToString(), client.Name, client.PhoneNumber,
             client.Email, "users/players/customers", queueName, JsonSerializer.Serialize(client.Orders));
+
+        private Result LogAndSendFail(string message)
+        {
+            _logger.LogDebug(message);
+
+            return Result.Fail(message);
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace WebStore.EventBus.Events
             builder.Property(e => e.RouteKey).HasColumnName("RouteKey").IsRequired();
             builder.Property(e => e.QueueName).HasColumnName("QueueName").IsRequired();
             builder.Property(e => e.IsProcessed).HasColumnName("IsProcessed").IsRequired();
+            builder.Property(e => e.CreationTimeUtc).HasColumnName("CreationTimeUtc").IsRequired();
         }
     }
 }

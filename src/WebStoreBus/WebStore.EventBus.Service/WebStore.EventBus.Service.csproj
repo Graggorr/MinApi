@@ -13,7 +13,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-    <PackageReference Include="WebStore.EventBus.Abstraction" Version="1.1.5.7" />
   </ItemGroup>
 
   <ItemGroup>

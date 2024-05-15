@@ -2,12 +2,15 @@
 using MediatR;
 using WebStore.API.Infrastructure.Clients;
 using WebStore.API.Domain;
+using Microsoft.Extensions.Logging;
 
 namespace WebStore.API.Application.Clients.Commands.CreateClient
 {
-    public class CreateClientRequestHandler(IClientRepository clientRepository) : IRequestHandler<RegisterClientRequest, Result<Guid>>
+    public class CreateClientRequestHandler(ILogger<IRequestHandler<RegisterClientRequest, Result<Guid>>> logger,
+        IClientRepository clientRepository) : IRequestHandler<RegisterClientRequest, Result<Guid>>
     {
         private readonly IClientRepository _clientRepository = clientRepository;
+        private readonly ILogger _logger = logger;
 
         public async Task<Result<Guid>> Handle(RegisterClientRequest request, CancellationToken cancellationToken)
         {
@@ -15,19 +18,17 @@ namespace WebStore.API.Application.Clients.Commands.CreateClient
 
             if (businessValidationResult.IsFailed)
             {
+                _logger.LogDebug($"{request.Id} did not pass business validation.");
+
                 return businessValidationResult;
             }
 
             var client = new Client { Id = request.Id, Email = request.Email, Name = request.Name, PhoneNumber = request.PhoneNumber, Orders = [] };
 
-            var result = await _clientRepository.AddClientAsync(client);
+            await _clientRepository.AddClientAsync(client);
 
-            if (result.IsSuccess)
-            {
-                return Result.Ok(client.Id);
-            }
+            return Result.Ok(client.Id);
 
-            return result;
         }
     }
 }
