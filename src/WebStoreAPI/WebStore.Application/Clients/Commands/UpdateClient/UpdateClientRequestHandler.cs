@@ -1,15 +1,16 @@
 ﻿using FluentResults;
 using MediatR;
-using WebStore.API.Application.Clients;
-using WebStore.API.Application.Clients.Commands;
+using Microsoft.Extensions.Logging;
 using WebStore.API.Domain;
 using WebStore.API.Infrastructure.Clients;
 
 namespace WebStore.API.Application.Clients.Commands.UpdateClient
 {
-    public class UpdateClientRequestHandler(IClientRepository clientRepository) : IRequestHandler<UpdateClientRequest, Result<Client>>
+    public class UpdateClientRequestHandler(ILogger<IRequestHandler<UpdateClientRequest, Result<Client>>> logger,
+        IClientRepository clientRepository) : IRequestHandler<UpdateClientRequest, Result<Client>>
     {
         private readonly IClientRepository _clientRepository = clientRepository;
+        private readonly ILogger _logger = logger;
 
         public async Task<Result<Client>> Handle(UpdateClientRequest request, CancellationToken cancellationToken)
         {
@@ -18,6 +19,8 @@ namespace WebStore.API.Application.Clients.Commands.UpdateClient
 
             if (businessValidationResult.IsFailed)
             {
+                _logger.LogDebug($"{dto.Id} did not pass business validation.");
+
                 return businessValidationResult;
             }
 

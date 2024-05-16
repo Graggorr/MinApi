@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebStore.Extensions;
 using WebStore.API.Infrastructure.Clients;
 using WebStore.API.Infrastructure.Orders;
 
@@ -12,7 +13,7 @@ namespace WebStore.API.Infrastructure
         {
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
-            services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(configuration.GetConnectionString("WebstoreDb")));
+            services.AddDbContext<WebStoreContext>(options => options.UseSqlServer(configuration.GetSqlConnectionString("ASPNETCORE_ENVIRONMENT")));
 
             return services;
         }

@@ -9,6 +9,7 @@ namespace WebStore.API.Application.Clients.Queries
     {
         private readonly IClientRepository _repository = repository;
 
-        public async Task<Result<Client>> Handle(GetClientHandlingRequest request, CancellationToken cancellationToken) => await _repository.GetClientAsync(request.Id);
+        public async Task<Result<Client>> Handle(GetClientHandlingRequest request, CancellationToken cancellationToken)
+            => await _repository.GetClientAsync(request.Id);
     }
 }

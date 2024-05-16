@@ -26,6 +26,7 @@ namespace WebStore.EventBus.RabbitMq
             try
             {
                 var body = JsonSerializer.SerializeToUtf8Bytes(integrationEvent);
+                PrepareQueue(_channel, integrationEvent.QueueName);
                 _channel.BasicPublish(EXCHANGE_NAME, integrationEvent.RouteKey, null, body);
 
                 return Result.Ok();
@@ -36,6 +37,14 @@ namespace WebStore.EventBus.RabbitMq
             }
         }
 
-        public async Task<Result> PublishAsync<T>(T integrationEvent) where T : IntegrationEvent => await Task.Factory.StartNew(() => Publish(integrationEvent));
+        public async Task<Result> PublishAsync<T>(T integrationEvent) where T : IntegrationEvent
+            => await Task.Factory.StartNew(() => Publish(integrationEvent));
+
+        private static void PrepareQueue(IModel channel, string queueName)
+        {
+            channel.ExchangeDeclare(EXCHANGE_NAME, "direct", true, false, null);
+            channel.QueueDeclare(queueName, true, false, false, null);
+            channel.QueueBind(queueName, EXCHANGE_NAME, "users/players/customers");
+        }
     }
 }

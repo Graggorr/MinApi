@@ -20,4 +20,5 @@ public record DeleteClientResponse(Client Client);
 public record GetClientRequest(Guid Id);
 public record GetClientResponse(Client Client);
 
-public record GetAllClientsResponse(List<Client> Clients);
+public record GetPaginatedClientsRequest(int Page);
+public record GetPaginatedClientsResponse(IEnumerable<Client> Clients);

@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "webstore.api.service": "StartDebugging",
+        "database": "StartWithoutDebugging",
+        "rabbitmq": "StartWithoutDebugging",
+        "webstore.consumer.service": "StartDebugging",
+        "webstore.eventbus.service": "StartDebugging"
+      }
+    }
+  }
+}

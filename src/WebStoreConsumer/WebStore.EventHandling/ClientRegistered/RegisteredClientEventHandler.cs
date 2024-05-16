@@ -8,10 +8,8 @@ namespace WebStore.Consumer.RabbitMq.ClientRegistered
     {
         public async Task<Result> Handle(CreatedClientEvent integrationEvent)
         {
-            await Task.Factory.StartNew(() =>
-            {
-                logger.LogInformation("Slavik");
-            });
+            logger.LogInformation($"{integrationEvent.Id} is processed");
+            logger.LogInformation("Slavik");
 
             return Result.Ok();
             //var emailSender = "graggorr@gmail.com";

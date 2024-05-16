@@ -9,12 +9,12 @@
 	<ItemGroup>
 		<PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
 		<PackageReference Include="RabbitMQ.Client.Core.DependencyInjection" Version="5.0.0" />
-		<PackageReference Include="WebStore.EventBus.Abstraction" Version="1.1.5.7" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\WebStore.EventBus.Infrastructure\WebStore.EventBus.Infrastructure.csproj" />
+	  <ProjectReference Include="..\..\WebStoreCommon\WebStore.EventBus.Abstraction\WebStore.EventBus.Abstraction.csproj" />
+	  <ProjectReference Include="..\..\WebStoreCommon\WebStore.Extensions\WebStore.Extensions.csproj" />
 	</ItemGroup>
 
 </Project>

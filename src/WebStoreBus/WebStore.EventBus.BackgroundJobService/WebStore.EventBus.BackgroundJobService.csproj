@@ -7,15 +7,15 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="EntityFramework" Version="6.4.4" />
+		<PackageReference Include="Dapper" Version="2.1.35" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
-		<PackageReference Include="WebStore.EventBus.Abstraction" Version="1.1.5.7" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
 		<PackageReference Include="Hangfire" Version="1.8.12" />
 		<PackageReference Include="Hangfire.SqlServer" Version="1.8.12" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\WebStore.EventBus.Infrastructure\WebStore.EventBus.Infrastructure.csproj" />
+	  <ProjectReference Include="..\..\WebStoreCommon\WebStore.Events\WebStore.Events.csproj" />
 	  <ProjectReference Include="..\WebStore.EventBus.RabbitMq\WebStore.EventBus.RabbitMq.csproj" />
 	</ItemGroup>
 	

@@ -4,6 +4,8 @@ namespace WebStore.EventBus.Abstraction;
 
 public abstract class IntegrationEvent
 {
+    public string Id { get; init; }
+
     [JsonIgnore()]
     public string RouteKey { get; protected set; }
     [JsonIgnore()]

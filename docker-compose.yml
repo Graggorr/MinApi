@@ -1,0 +1,60 @@
+version: '3.4'
+
+networks:
+  webstore_network:
+    driver: bridge
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    networks: 
+      - webstore_network
+    container_name: rabbitmq
+    ports:
+        - "15672:15672"
+        - "5672:5672"
+  database:
+    container_name: sqlserver
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    networks: 
+      - webstore_network
+    ports:
+        - "1433:1433"
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=Pass@word
+  webstore.api.service:
+    container_name: api
+    networks: 
+      - webstore_network
+    ports:
+      - "8080:8080"
+    depends_on: 
+      - database
+    image: ${DOCKER_REGISTRY-}webstoreapiservice
+    build:
+      context: .
+      dockerfile: src/WebStoreAPI/WebStore.API/Dockerfile
+  webstore.eventbus.service:
+    container_name: eventbus
+    networks: 
+      - webstore_network
+    ports:
+      - "8082:8082"
+    depends_on:
+      - database
+      - rabbitmq
+      - webstore.api.service
+    image: ${DOCKER_REGISTRY-}webstoreeventbusservice
+    build:
+      context: .
+      dockerfile: src/WebStoreBus/WebStore.EventBus.Service/Dockerfile
+  webstore.consumer.service:
+    container_name: consumer
+    networks: 
+      - webstore_network
+    depends_on:
+      - rabbitmq 
+    image: ${DOCKER_REGISTRY-}webstoreconsumerservice
+    build:
+      context: .
+      dockerfile: src/WebStoreConsumer/WebStore.Service/Dockerfile
