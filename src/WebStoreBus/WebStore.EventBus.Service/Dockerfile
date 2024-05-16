@@ -3,16 +3,18 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
-EXPOSE 8082:8082
+EXPOSE 8082
 
 ENV DOTNET_ENVIRONMENT=Production
-
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/WebStoreBus/WebStore.EventBus.Service/WebStore.EventBus.Service.csproj", "src/WebStoreBus/WebStore.EventBus.Service/"]
 COPY ["src/WebStoreBus/WebStore.EventBus.BackgroundJobService/WebStore.EventBus.BackgroundJobService.csproj", "src/WebStoreBus/WebStore.EventBus.BackgroundJobService/"]
+COPY ["src/WebStoreCommon/WebStore.Events/WebStore.Events.csproj", "src/WebStoreCommon/WebStore.Events/"]
+COPY ["src/WebStoreCommon/WebStore.EventBus.Abstraction/WebStore.EventBus.Abstraction.csproj", "src/WebStoreCommon/WebStore.EventBus.Abstraction/"]
 COPY ["src/WebStoreBus/WebStore.EventBus.RabbitMq/WebStore.EventBus.RabbitMq.csproj", "src/WebStoreBus/WebStore.EventBus.RabbitMq/"]
+COPY ["src/WebStoreCommon/Webstore.Extensions/Webstore.Extensions.csproj", "src/WebStoreCommon/Webstore.Extensions/"]
 RUN dotnet restore "./src/WebStoreBus/WebStore.EventBus.Service/./WebStore.EventBus.Service.csproj"
 COPY . .
 WORKDIR "/src/src/WebStoreBus/WebStore.EventBus.Service"

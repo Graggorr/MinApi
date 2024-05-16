@@ -11,6 +11,9 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/WebStoreConsumer/WebStore.Service/WebStore.Consumer.Service.csproj", "src/WebStoreConsumer/WebStore.Service/"]
 COPY ["src/WebStoreConsumer/WebStore.EventHandling/WebStore.Consumer.RabbitMq.csproj", "src/WebStoreConsumer/WebStore.EventHandling/"]
+COPY ["src/WebStoreCommon/WebStore.EventBus.Abstraction/WebStore.EventBus.Abstraction.csproj", "src/WebStoreCommon/WebStore.EventBus.Abstraction/"]
+COPY ["src/WebStoreCommon/WebStore.Events/WebStore.Events.csproj", "src/WebStoreCommon/WebStore.Events/"]
+COPY ["src/WebStoreCommon/Webstore.Extensions/Webstore.Extensions.csproj", "src/WebStoreCommon/Webstore.Extensions/"]
 RUN dotnet restore "./src/WebStoreConsumer/WebStore.Service/./WebStore.Consumer.Service.csproj"
 COPY . .
 WORKDIR "/src/src/WebStoreConsumer/WebStore.Service"

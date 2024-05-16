@@ -4,11 +4,11 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "webstore.api.service": "StartWithoutDebugging",
+        "webstore.api.service": "StartDebugging",
         "database": "StartWithoutDebugging",
         "rabbitmq": "StartWithoutDebugging",
-        "webstore.consumer.service": "StartWithoutDebugging",
-        "webstore.eventbus.service": "StartWithoutDebugging"
+        "webstore.consumer.service": "StartDebugging",
+        "webstore.eventbus.service": "StartDebugging"
       }
     }
   }

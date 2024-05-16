@@ -3,7 +3,13 @@ version: '3.4'
 services:
   webstore.api.service:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
     ports:
-      - "8080"
+      - "8080:8080"
+  webstore.eventbus.service:
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8082
+    ports:
+      - "8082:8082"

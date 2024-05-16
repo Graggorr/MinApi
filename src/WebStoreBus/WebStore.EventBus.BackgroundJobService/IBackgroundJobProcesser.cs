@@ -2,6 +2,6 @@
 {
     public interface IBackgroundJobProcesser
     {
-        public Task ProcessEvents();
+        public Task ProcessJob();
     }
 }

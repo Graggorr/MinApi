@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Data.Entity.Infrastructure;
-using Webstore.Extensions;
+using WebStore.Extensions;
 
 namespace WebStore.API.Service.Health
 {

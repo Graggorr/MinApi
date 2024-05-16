@@ -2,11 +2,11 @@
 using System.Data;
 using Microsoft.Extensions.Logging;
 using WebStore.EventBus.Abstraction;
-using WebStore.EventBus.Events;
+using WebStore.Events;
 
 namespace WebStore.EventBus.BackgroundJobService
 {
-    public class BackgroundJobProcesser(IEventBus eventBus, IDbConnection dbConnection, ILogger<IBackgroundJobProcesser> logger)
+    public class BackgroundEventProcesser(IEventBus eventBus, IDbConnection dbConnection, ILogger<IBackgroundJobProcesser> logger)
         : IBackgroundJobProcesser
     {
         private readonly IEventBus _eventBus = eventBus;
@@ -17,8 +17,13 @@ namespace WebStore.EventBus.BackgroundJobService
             FROM ClientEvent
             WHERE IsProcessed = 0";
 
-        public async Task ProcessEvents()
+        public async Task ProcessJob()
         {
+            if (_dbConnection.State is not ConnectionState.Open)
+            {
+                _dbConnection.Open();
+            }
+
             var events = await _dbConnection.QueryAsync<ClientEvent>(QUERY);
 
             foreach (var clientEvent in events)
@@ -29,11 +34,21 @@ namespace WebStore.EventBus.BackgroundJobService
 
                     if (result.IsSuccess)
                     {
+                        _logger.LogInformation($"{clientEvent.Id} is published to the event bus");
                         using var transaction = _dbConnection.BeginTransaction();
                         clientEvent.IsProcessed = true;
-                        var operation = @"UPDATE ClientEvent SET IsProcessed = @IsProcessed WHERE Id = @Id";
+                        var operation = @"UPDATE ClientEvent SET IsProcessed = 1 WHERE Id = @Id";
 
-                        await _dbConnection.ExecuteAsync(operation, clientEvent, transaction);
+                        var Commandresult = await _dbConnection.ExecuteAsync(operation, clientEvent, transaction);
+
+                        if (Commandresult > 0)
+                        {
+                            _logger.LogInformation($"{clientEvent.Id} IsProcessed status has been updated");
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"{clientEvent.Id} IsProcessed status has not been updated!");
+                        }
 
                         transaction.Commit();
                     }
@@ -43,6 +58,8 @@ namespace WebStore.EventBus.BackgroundJobService
                     _logger.LogError($"Message: {exception.Message}\nStack trace: {exception.StackTrace}");
                 }
             }
+
+            _dbConnection.Close();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Webstore.Extensions;
+using WebStore.Extensions;
 using WebStore.API.Infrastructure.Clients;
 using WebStore.API.Infrastructure.Orders;
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Webstore.Extensions
+namespace WebStore.Extensions
 {
     public static class ConfigurationExtensions
     {

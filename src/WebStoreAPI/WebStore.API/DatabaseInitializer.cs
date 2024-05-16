@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebStore.Extensions;
 using WebStore.API.Infrastructure;
 
 namespace WebStore.API.Service
@@ -7,12 +8,13 @@ namespace WebStore.API.Service
     {
         private readonly IConfiguration _configuration = configuration;
 
-        public async Task InitializeDatabase()
+        public void InitializeDatabase()
         {
-            var options = new DbContextOptionsBuilder<WebStoreContext>().UseSqlServer(_configuration.GetConnectionString("WebstoreDb")).Options;
+            var options = new DbContextOptionsBuilder<WebStoreContext>()
+                .UseSqlServer(_configuration.GetSqlConnectionString("ASPNETCORE_ENVIRONMENT")).Options;
             var context = new WebStoreContext(options);
 
-            await context.Database.EnsureCreatedAsync();
+            context.Database.EnsureCreated();
         }
     }
 }

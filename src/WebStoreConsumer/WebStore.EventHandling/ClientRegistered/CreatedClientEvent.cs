@@ -1,4 +1,4 @@
-﻿using WebStore.EventBus.Events;
+﻿using WebStore.Events;
 
 namespace WebStore.Consumer.RabbitMq.ClientRegistered
 {

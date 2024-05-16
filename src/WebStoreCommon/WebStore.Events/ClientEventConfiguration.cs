@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebStore.EventBus.Events
+namespace WebStore.Events
 {
     public class ClientEventConfiguration : IEntityTypeConfiguration<ClientEvent>
     {
@@ -9,8 +9,8 @@ namespace WebStore.EventBus.Events
         {
             builder.ToTable(nameof(ClientEvent));
 
-            builder.HasKey(e => e.ClientId);
-            builder.Property(e => e.ClientId).HasColumnName("Id").ValueGeneratedNever().IsRequired();
+            builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id).HasColumnName("Id").ValueGeneratedNever().IsRequired();
             builder.Property(e => e.Name).HasColumnName("Name").IsRequired();
             builder.Property(e => e.PhoneNumber).HasColumnName("PhoneNumber").IsRequired();
             builder.Property(e => e.Email).HasColumnName("Email").IsRequired();

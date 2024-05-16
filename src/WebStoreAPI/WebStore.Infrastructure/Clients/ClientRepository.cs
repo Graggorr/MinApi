@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using WebStore.API.Domain;
-using WebStore.EventBus.Events;
+using WebStore.Events;
 using WebStore.Extensions;
 
 namespace WebStore.API.Infrastructure.Clients

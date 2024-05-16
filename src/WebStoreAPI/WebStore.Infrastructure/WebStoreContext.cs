@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebStore.API.Infrastructure.Orders;
 using WebStore.API.Infrastructure.Clients;
-using WebStore.EventBus.Events;
 using WebStore.API.Domain;
+using WebStore.Events;
 
 namespace WebStore.API.Infrastructure
 {

@@ -8,6 +8,7 @@ namespace WebStore.Consumer.RabbitMq.ClientRegistered
     {
         public async Task<Result> Handle(CreatedClientEvent integrationEvent)
         {
+            logger.LogInformation($"{integrationEvent.Id} is processed");
             logger.LogInformation("Slavik");
 
             return Result.Ok();

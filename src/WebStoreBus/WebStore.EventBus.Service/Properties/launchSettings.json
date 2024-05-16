@@ -15,10 +15,6 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/dashboard",
-      "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "8082:8082",
-        "DOTNET_ENVIRONMENT": "Production"
-      },
       "applicationUrl": "http://localhost:8082",
       "publishAllPorts": true
     }

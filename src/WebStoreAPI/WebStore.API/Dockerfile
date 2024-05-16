@@ -3,7 +3,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
-EXPOSE 8080:8080
+EXPOSE 8080
 
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV PORT=8080
@@ -15,6 +15,9 @@ COPY ["src/WebStoreAPI/WebStore.API/WebStore.API.Service.csproj", "src/WebStoreA
 COPY ["src/WebStoreAPI/WebStore.Application/WebStore.API.Application.csproj", "src/WebStoreAPI/WebStore.Application/"]
 COPY ["src/WebStoreAPI/WebStore.Domain/WebStore.API.Domain.csproj", "src/WebStoreAPI/WebStore.Domain/"]
 COPY ["src/WebStoreAPI/WebStore.Infrastructure/WebStore.API.Infrastructure.csproj", "src/WebStoreAPI/WebStore.Infrastructure/"]
+COPY ["src/WebStoreCommon/WebStore.Events/WebStore.Events.csproj", "src/WebStoreCommon/WebStore.Events/"]
+COPY ["src/WebStoreCommon/WebStore.EventBus.Abstraction/WebStore.EventBus.Abstraction.csproj", "src/WebStoreCommon/WebStore.EventBus.Abstraction/"]
+COPY ["src/WebStoreCommon/Webstore.Extensions/Webstore.Extensions.csproj", "src/WebStoreCommon/Webstore.Extensions/"]
 RUN dotnet restore "./src/WebStoreAPI/WebStore.API/./WebStore.API.Service.csproj"
 COPY . .
 WORKDIR "/src/src/WebStoreAPI/WebStore.API"

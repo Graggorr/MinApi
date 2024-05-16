@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Webstore.Extensions;
+using WebStore.Extensions;
 using WebStore.EventBus.Abstraction;
 
 namespace WebStore.EventBus.RabbitMq

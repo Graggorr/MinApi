@@ -11,8 +11,6 @@ namespace WebStore.API.Service.Health
         {
             _logger = logger;
 
-            var port = Environment.GetEnvironmentVariable("PORT");
-
             _client = new HttpClient
             { 
                 BaseAddress = new Uri($"http://localhost:{Environment.GetEnvironmentVariable("PORT")}/_health") 
