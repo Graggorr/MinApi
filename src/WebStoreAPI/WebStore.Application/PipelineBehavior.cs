@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Text;
-using WebStore.API.Infrastructure;
+using WebStore.Extensions;
 
 namespace WebStore.API.Application
 {

@@ -26,6 +26,8 @@ services:
     container_name: api
     networks: 
       - webstore_network
+    ports:
+      - "8080:8080"
     depends_on: 
       - database
     image: ${DOCKER_REGISTRY-}webstoreapiservice
@@ -36,6 +38,8 @@ services:
     container_name: eventbus
     networks: 
       - webstore_network
+    ports:
+      - "8082:8082"
     depends_on:
       - database
       - rabbitmq
@@ -49,7 +53,7 @@ services:
     networks: 
       - webstore_network
     depends_on:
-      - database
+      - rabbitmq 
     image: ${DOCKER_REGISTRY-}webstoreconsumerservice
     build:
       context: .

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Data.Entity.Infrastructure;
+using Webstore.Extensions;
 
 namespace WebStore.API.Service.Health
 {
@@ -17,7 +18,8 @@ namespace WebStore.API.Service.Health
 
             try
             {
-                var connection = _factory.CreateConnection(_configuration.GetConnectionString("WebStoreDb"));
+                var connection = _factory.CreateConnection(_configuration.GetSqlConnectionString("ASPNETCORE_ENVIRONMENT"));
+                connection.Open();
                 var command = connection.CreateCommand();
                 command.CommandText = @"SELECT 1";
                 await command.ExecuteScalarAsync();

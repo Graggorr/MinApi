@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.EventBus.Events", 
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B87A40EC-FD70-4926-81D1-BD5C6279FBAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webstore.Extensions", "src\WebStoreCommon\Webstore.Extensions\Webstore.Extensions.csproj", "{3E49F1E6-4142-495E-92EE-00A3660C6F0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{B87A40EC-FD70-4926-81D1-BD5C6279FBAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B87A40EC-FD70-4926-81D1-BD5C6279FBAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B87A40EC-FD70-4926-81D1-BD5C6279FBAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E49F1E6-4142-495E-92EE-00A3660C6F0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E49F1E6-4142-495E-92EE-00A3660C6F0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E49F1E6-4142-495E-92EE-00A3660C6F0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E49F1E6-4142-495E-92EE-00A3660C6F0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +117,7 @@ Global
 		{15A36BC2-04D3-4FD1-A21B-8F532CE9FE76} = {319750D1-66E8-45E6-ACEF-6EB453B41615}
 		{CEAE33ED-47F6-4680-AF79-B633A08CA262} = {15A36BC2-04D3-4FD1-A21B-8F532CE9FE76}
 		{0DD60B30-C080-4A35-9BA2-4BD2DE43D846} = {15A36BC2-04D3-4FD1-A21B-8F532CE9FE76}
+		{3E49F1E6-4142-495E-92EE-00A3660C6F0E} = {15A36BC2-04D3-4FD1-A21B-8F532CE9FE76}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB7EB8A6-2496-4380-A18A-6E0663C3378A}

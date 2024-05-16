@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using WebStore.API.Domain;
 using WebStore.EventBus.Events;
+using WebStore.Extensions;
 
 namespace WebStore.API.Infrastructure.Clients
 {
@@ -30,7 +31,7 @@ namespace WebStore.API.Infrastructure.Clients
             {
                 var message = $"Client ({client.Id}) is not found";
 
-                return LogAndSendFail(message);
+                return _logger.LogSendAndFail(message);
             }
 
             entity.Orders.Clear();
@@ -56,7 +57,7 @@ namespace WebStore.API.Infrastructure.Clients
             {
                 var message = $"Client ({id}) is not found";
 
-                return LogAndSendFail(message);
+                return _logger.LogSendAndFail(message);
             }
 
             _context.Clients.Remove(client);
@@ -77,7 +78,7 @@ namespace WebStore.API.Infrastructure.Clients
             {
                 var message = $"{id} is not found";
 
-                return LogAndSendFail(message);
+                return _logger.LogSendAndFail(message);
             }
 
             return Result.Ok(client);
@@ -98,12 +99,5 @@ namespace WebStore.API.Infrastructure.Clients
 
         private static ClientEvent CreateClientEvent(Client client, string queueName) => new(client.Id.ToString(), client.Name, client.PhoneNumber,
             client.Email, "users/players/customers", queueName, JsonSerializer.Serialize(client.Orders));
-
-        private Result LogAndSendFail(string message)
-        {
-            _logger.LogDebug(message);
-
-            return Result.Fail(message);
-        }
     }
 }

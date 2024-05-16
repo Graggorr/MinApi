@@ -1,11 +1,14 @@
-﻿namespace WebStore.API.Service.Health
+﻿using System.Data.Entity.Infrastructure;
+
+namespace WebStore.API.Service.Health
 {
     internal static class Register
     {
         public static IHealthChecksBuilder AddWebstoreHealthChecks(this IHealthChecksBuilder builder)
         {
-            //builder.AddCheck<DatabaseHealthCheck>("Database");
+            builder.AddCheck<DatabaseHealthCheck>("Database");
             builder.AddCheck<ClientRepositoryHealthCheck>("ClientRepository");
+            builder.Services.AddSingleton<IDbConnectionFactory>((sp) => new SqlConnectionFactory());
             builder.Services.AddSingleton<IHealthCheckRunner, HealthCheckRunner>();
 
             return builder;

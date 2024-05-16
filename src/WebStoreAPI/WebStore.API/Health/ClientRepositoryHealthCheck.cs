@@ -23,7 +23,7 @@ namespace WebStore.API.Service.Health
                 result = HealthCheckResult.Degraded(exception: exception);
             }
 
-            _logger.Log(result.Status is HealthStatus.Healthy ? LogLevel.Debug : LogLevel.Warning, $"Database health status: {result.Status}");
+            _logger.Log(result.Status is HealthStatus.Healthy ? LogLevel.Debug : LogLevel.Warning, $"ClientRepository health status: {result.Status}");
 
             return result;
         }

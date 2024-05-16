@@ -4,18 +4,22 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:18080",
       "environmentVariables": {
+        "PORT": "18080",
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:8080"
+      }
     },
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTP_PORTS": "8080:8080",
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "PORT": "8080"
       },
+      "applicationUrl": "http://localhost:8080",
       "publishAllPorts": true
     }
   },

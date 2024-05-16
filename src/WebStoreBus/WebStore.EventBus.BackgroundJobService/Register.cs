@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Data;
 using System.Data.SqlClient;
+using Webstore.Extensions;
 using WebStore.EventBus.RabbitMq;
 
 namespace WebStore.EventBus.BackgroundJobService
@@ -12,7 +13,7 @@ namespace WebStore.EventBus.BackgroundJobService
     {
         public static IServiceCollection AddBackgroundJobs(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("WebstoreDb");
+            var connectionString = configuration.GetSqlConnectionString("DOTNET_ENVIRONMENT");
 
             services.AddRabbitMq(configuration);
             services.AddHangfire(config => config.UseSqlServerStorage(connectionString));

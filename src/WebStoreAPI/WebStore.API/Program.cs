@@ -1,5 +1,6 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Routing.Constraints;
 using WebStore.API.Application;
 using WebStore.API.Infrastructure;
 using WebStore.API.Service;
@@ -40,5 +41,5 @@ var group = app.MapGroup("/api/webstore")
 
 group.MapClients();
 
-//app.RunHealthCheckBackground();
+app.RunHealthCheckBackground();
 app.Run();

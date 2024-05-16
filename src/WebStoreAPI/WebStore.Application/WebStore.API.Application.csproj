@@ -12,11 +12,12 @@
 		<PackageReference Include="MediatR" Version="12.2.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Riok.Mapperly" Version="3.5.0" />
+		<PackageReference Include="Webstore.Extensions" Version="1.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\WebStore.Domain\WebStore.API.Domain.csproj" />
-	  <ProjectReference Include="..\WebStore.Infrastructure\WebStore.API.Infrastructure.csproj" />
+		<ProjectReference Include="..\WebStore.Infrastructure\WebStore.API.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>

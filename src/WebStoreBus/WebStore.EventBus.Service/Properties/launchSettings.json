@@ -5,9 +5,10 @@
       "launchBrowser": true,
       "launchUrl": "dashboard",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+        "DOTNET_ENVIRONMENT": "Development",
+        "ASPNETCORE_HTTP_PORTS": "18082:18082"
       },
-      "applicationUrl": "http://localhost:8082",
+      "applicationUrl": "http://localhost:18082",
       "dotnetRunMessages": true
     },
     "Docker": {
@@ -15,8 +16,10 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/dashboard",
       "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTP_PORTS": "8082:8082",
+        "DOTNET_ENVIRONMENT": "Production"
       },
+      "applicationUrl": "http://localhost:8082",
       "publishAllPorts": true
     }
   },

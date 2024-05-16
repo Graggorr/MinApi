@@ -14,11 +14,11 @@ public static class Endpoints
     {
         var group = builder.MapGroup("/clients").WithTags("Clients");
 
-        group.MapPost(string.Empty, PostClient);
-        group.MapGet("/{page: int}", GetPaginatedClients);
-        group.MapGet("/{id: guid}", GetClient).WithName(nameof(GetClient));
-        group.MapPut("/{id}", PutClient);
-        group.MapDelete("/{id}", DeleteClient);
+        group.MapPost(string.Empty, PostClient).WithName(nameof(PostClient));
+        group.MapGet("/{page:int}", GetPaginatedClients).WithName(nameof(GetPaginatedClients));
+        group.MapGet("/{id:guid}", GetClient).WithName(nameof(GetClient));
+        group.MapPut("/{id}", PutClient).WithName(nameof(PutClient));
+        group.MapDelete("/{id}", DeleteClient).WithName(nameof(DeleteClient));
 
         return builder;
     }
