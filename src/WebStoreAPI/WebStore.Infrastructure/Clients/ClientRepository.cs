@@ -97,7 +97,7 @@ namespace WebStore.API.Infrastructure.Clients
         public async Task<bool> IsEmailUniqueAsync(string email)
             => !await _context.Clients.AnyAsync(x => x.Email.Equals(email));
 
-        private static ClientEvent CreateClientEvent(Client client, string queueName) => new(client.Id.ToString(), client.Name, client.PhoneNumber,
+        internal static ClientEvent CreateClientEvent(Client client, string queueName) => new(client.Id.ToString(), client.Name, client.PhoneNumber,
             client.Email, "users/players/customers", queueName, JsonSerializer.Serialize(client.Orders));
     }
 }

@@ -3,9 +3,9 @@
     public class Order
     {
         public required int Id { get; init; }
-        public required string Name { get; init; }
-        public required double Price { get; init; }
-        public required string Description { get; init; }
+        public required string Name { get; set; }
+        public required double Price { get; set; }
+        public required string Description { get; set; }
         public required Guid ClientId { get; init; }
         public required Client Client { get; init; }
 
