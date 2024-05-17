@@ -12,7 +12,7 @@ namespace WebStore.API.Infrastructure.Orders
         private readonly WebStoreContext _context = context;
         private readonly ILogger _logger = logger;
 
-        public async Task AddOrderAsync(Order order)
+        public async Task<int> AddOrderAsync(Order order)
         {
             _context.Orders.Add(order);
             var client = await _context.Clients.FindAsync(order.ClientId);
@@ -22,6 +22,8 @@ namespace WebStore.API.Infrastructure.Orders
             await _context.SaveChangesAsync();
 
             _logger.LogInformation($"A new order has been added:\n{JsonSerializer.Serialize(order)}");
+
+            return order.Id;
         }
 
         public async Task<Result> UpdateOrderAsync(Order order)
@@ -100,7 +102,5 @@ namespace WebStore.API.Infrastructure.Orders
 
             return Result.Ok(client.Orders as IEnumerable<Order>);
         }
-
-        public async Task<bool> IsClientExist(Guid clientId) => await _context.Clients.FindAsync(clientId) is not null;
     }
 }

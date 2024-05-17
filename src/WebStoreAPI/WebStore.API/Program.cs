@@ -1,10 +1,10 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Routing.Constraints;
 using WebStore.API.Application;
 using WebStore.API.Infrastructure;
 using WebStore.API.Service;
-using WebStore.API.Service.Clients;
+using WebStore.API.Service.Endpoints.Clients;
+using WebStore.API.Service.Endpoints.Orders;
 using WebStore.API.Service.Health;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +20,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
-app.Services.GetRequiredService<DatabaseInitializer>().InitializeDatabase(!app.Environment.IsProduction());
+app.Services.GetRequiredService<DatabaseInitializer>().InitializeDatabase();
 
 app.MapHealthChecks("/_health", new HealthCheckOptions
 {
@@ -37,6 +37,7 @@ var group = app.MapGroup("/api/webstore")
     .WithOpenApi();
 
 group.MapClients();
+group.MapOrders();
 
 app.RunHealthCheckBackground();
 app.Run();

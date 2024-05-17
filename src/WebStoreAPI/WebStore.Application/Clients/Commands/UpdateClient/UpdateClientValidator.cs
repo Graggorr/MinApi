@@ -7,9 +7,9 @@ namespace WebStore.API.Application.Clients.Commands.UpdateClient
     {
         public UpdateClientValidator()
         {
-            RuleFor(x => x.Dto.Name).NotEmpty();
-            RuleFor(x => x.Dto.PhoneNumber).NotEmpty();
-            RuleFor(x => x.Dto.Email).NotEmpty();
+            RuleFor(x => x.RequestBody.Name).NotEmpty();
+            RuleFor(x => x.RequestBody.PhoneNumber).NotEmpty();
+            RuleFor(x => x.RequestBody.Email).NotEmpty();
         }
     }
 }
