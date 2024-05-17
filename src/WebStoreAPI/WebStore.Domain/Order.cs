@@ -2,11 +2,12 @@
 {
     public class Order
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public double Price { get; set; }
-        public string Description { get; set; }
-        public List<Client> Clients { get; set; }
+        public required int Id { get; init; }
+        public required string Name { get; init; }
+        public required double Price { get; init; }
+        public required string Description { get; init; }
+        public required Guid ClientId { get; init; }
+        public required Client Client { get; init; }
 
         public string ToStringEmailMessage() => $"\n{Name} - {Price}";
         public string ToStringWithoutClients() => $"id: {Id}\nname: {Name}\nprice: {Price}\ndescription: {Description}";
