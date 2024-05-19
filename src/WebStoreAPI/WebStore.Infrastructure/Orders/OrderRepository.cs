@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using WebStore.API.Domain;
-using WebStore.API.Infrastructure.Clients;
+using WebStore.Events.Orders;
 using WebStore.Extensions;
 
 namespace WebStore.API.Infrastructure.Orders
@@ -17,7 +17,7 @@ namespace WebStore.API.Infrastructure.Orders
             _context.Orders.Add(order);
             var client = await _context.Clients.FindAsync(order.ClientId);
             client.Orders.Add(order);
-            _context.ClientEvents.Add(ClientRepository.CreateClientEvent(client, "order_created"));
+            _context.OrderEvents.Add(CreateOrderEvent(order, "order_created"));
 
             await _context.SaveChangesAsync();
 
@@ -41,9 +41,7 @@ namespace WebStore.API.Infrastructure.Orders
             orderEntity.Description = order.Description;
             orderEntity.Name = order.Name;
 
-            var client = await _context.Clients.FindAsync(order.ClientId);
-
-            await _context.ClientEvents.AddAsync(ClientRepository.CreateClientEvent(client, "order_updated"));
+            _context.OrderEvents.Add(CreateOrderEvent(order, "order_updated"));
             await _context.SaveChangesAsync();
 
             _logger.LogInformation($"Order ({orderEntity.Id}) has been updated. New statement:\n{JsonSerializer.Serialize(orderEntity)}");
@@ -67,7 +65,7 @@ namespace WebStore.API.Infrastructure.Orders
             var client = await _context.Clients.FindAsync(order.ClientId);
             client.Orders.Remove(order);
 
-            await _context.ClientEvents.AddAsync(ClientRepository.CreateClientEvent(client, "order_deleted"));
+            _context.OrderEvents.Add(CreateOrderEvent(order, "order_deleted"));
             await _context.SaveChangesAsync();
 
             _logger.LogInformation($"Order ({id}) has been deleted:\n{JsonSerializer.Serialize(order)}");
@@ -102,5 +100,8 @@ namespace WebStore.API.Infrastructure.Orders
 
             return Result.Ok(client.Orders as IEnumerable<Order>);
         }
+
+        private static OrderEvent CreateOrderEvent(Order order, string queueName) => new(order.Id.ToString(), order.ClientId.ToString(),
+            order.Name, order.Description, order.Price, "users/players/customers/orders", queueName);        
     }
 }

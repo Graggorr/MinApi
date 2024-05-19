@@ -11,8 +11,6 @@ namespace WebStore.Consumer.RabbitMq
 {
     public class RabbitMqConsumer<T> : IConsumer where T : IntegrationEvent
     {
-        private const string EXCHANGE_NAME = "webstore_event_bus";
-
         private readonly IIntegrationEventHandler<T> _eventHandler;
         private readonly ILogger _logger;
         private readonly IConnection _connection;
@@ -42,7 +40,6 @@ namespace WebStore.Consumer.RabbitMq
             var queueName = $"client_{typeName.Remove(index).ToLower()}";
 
             _channel.BasicQos(0, 1, false);
-            PrepareQueue(_channel, queueName);
             _channel.BasicConsume(queueName, false, consumer);
 
             return Result.Ok();
@@ -58,14 +55,12 @@ namespace WebStore.Consumer.RabbitMq
             if (result.IsSuccess)
             {
                 _channel.BasicAck(args.DeliveryTag, false);
-            }
-        }
+                _logger.LogInformation($"Message of {_type.Name} with ID {integrationEvent.Id} has been acked successfully.");
 
-        private static void PrepareQueue(IModel channel, string queueName)
-        {
-            channel.ExchangeDeclare(EXCHANGE_NAME, "direct", true, false, null);
-            channel.QueueDeclare(queueName, true, false, false, null);
-            channel.QueueBind(queueName, EXCHANGE_NAME, "users/players/customers");
+                return;
+            }
+
+            _logger.LogWarning($"Cannot delete message of {_type.Name} with ID {integrationEvent.Id}!");
         }
     }
 }

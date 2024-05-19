@@ -12,7 +12,7 @@ namespace WebStore.API.Service
         {
             var options = new DbContextOptionsBuilder<WebStoreContext>()
                 .UseSqlServer(_configuration.GetSqlConnectionString("ASPNETCORE_ENVIRONMENT")).Options;
-            var context = new WebStoreContext(options);
+            using var context = new WebStoreContext(options);
 
             context.Database.EnsureCreated();
         }

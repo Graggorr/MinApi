@@ -62,7 +62,6 @@ namespace WebStore.EventBus.Abstraction
                 {
                     typeToReturn = tempType;
                 }
-
             }
 
             return typeToReturn;

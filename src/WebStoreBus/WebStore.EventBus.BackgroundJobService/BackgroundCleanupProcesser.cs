@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
 using System.Data;
-using WebStore.Events;
+using WebStore.Events.Clients;
 
 namespace WebStore.EventBus.BackgroundJobService
 {
