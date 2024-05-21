@@ -18,7 +18,7 @@ namespace WebStore.EventBus.BackgroundJobService
             services.AddRabbitMq(configuration);
             services.AddHangfire(config => config.UseSqlServerStorage(connectionString));
             services.AddHangfireServer(config => config.SchedulePollingInterval = TimeSpan.FromSeconds(1));
-            services.AddSingleton<IDbConnection>((sp) => new SqlConnection(connectionString));
+            services.AddSingleton<IDbConnection>(sp => new SqlConnection(connectionString));
             services.AddSingleton<IBackgroundJobProcesser, BackgroundEventProcesser>();
             services.AddSingleton<IBackgroundJobProcesser, BackgroundCleanupProcesser>();
 
@@ -30,7 +30,7 @@ namespace WebStore.EventBus.BackgroundJobService
             var jobManager = app.Services.GetRequiredService<IRecurringJobManager>();
 
             jobManager.AddOrUpdate<BackgroundEventProcesser>("background-event-processer",
-                instance => instance.ProcessJob(), Cron.Daily()/*"0/15 * * * * *"*/);
+                instance => instance.ProcessJob(), "0/15 * * * * *");
             jobManager.AddOrUpdate<BackgroundCleanupProcesser>("background-cleanup-processer",
                 instance => instance.ProcessJob(), Cron.Monthly());
 

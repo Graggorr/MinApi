@@ -33,7 +33,7 @@ namespace WebStore.EventBus.RabbitMq
                 var body = JsonSerializer.SerializeToUtf8Bytes(integrationEvent);
                 _channel.PrepareQueue(EXCHANGE_NAME, integrationEvent.QueueName, integrationEvent.RouteKey);
                 _channel.BasicPublish(EXCHANGE_NAME, integrationEvent.RouteKey, null, body);
-                _logger.LogInformation($"{typeof(T).Name} with Id: {integrationEvent.Id} has published successfully.");
+                _logger.LogInformation($"{typeof(T).Name} with Id: {integrationEvent.Id} has been published successfully.");
 
                 return Result.Ok();
             }
