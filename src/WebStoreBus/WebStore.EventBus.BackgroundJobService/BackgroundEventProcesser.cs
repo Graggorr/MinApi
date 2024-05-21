@@ -2,7 +2,8 @@
 using System.Data;
 using Microsoft.Extensions.Logging;
 using WebStore.EventBus.Abstraction;
-using WebStore.Events;
+using WebStore.Events.Clients;
+using WebStore.Events.Orders;
 
 namespace WebStore.EventBus.BackgroundJobService
 {
@@ -14,43 +15,53 @@ namespace WebStore.EventBus.BackgroundJobService
         private readonly IDbConnection _dbConnection = dbConnection;
         private const string QUERY = @"
             SELECT *
-            FROM ClientEvent
+            FROM {0}
             WHERE IsProcessed = 0";
 
-        public async Task ProcessJob()
+        public Task ProcessJob()
         {
             if (_dbConnection.State is not ConnectionState.Open)
             {
                 _dbConnection.Open();
             }
 
-            var events = await _dbConnection.QueryAsync<ClientEvent>(QUERY);
+            var clientEventsTask = ProceedEvents<ClientEvent>();
+            var orderEventsTask = ProceedEvents<OrderEvent>();
 
-            foreach (var clientEvent in events)
+            Task.WaitAll(clientEventsTask, orderEventsTask);
+
+            _dbConnection.Close();
+
+            return Task.CompletedTask;
+        }
+
+        private async Task ProceedEvents<T>() where T : IntegrationEvent
+        {
+            var type = typeof(T);
+            var integrationEvents = (await _dbConnection.QueryAsync(type, string.Format(QUERY, type.Name))) as IEnumerable<T>;
+
+            foreach (var integrationEvent in integrationEvents)
             {
                 try
                 {
-                    var result = await _eventBus.PublishAsync(clientEvent);
+                    var result = await _eventBus.PublishAsync(integrationEvent);
 
                     if (result.IsSuccess)
                     {
-                        _logger.LogInformation($"{clientEvent.Id} is published to the event bus");
-                        using var transaction = _dbConnection.BeginTransaction();
-                        clientEvent.IsProcessed = true;
-                        var operation = @"UPDATE ClientEvent SET IsProcessed = 1 WHERE Id = @Id";
+                        _logger.LogInformation($"{integrationEvent.Id} is published to the event bus");
+                        integrationEvent.IsProcessed = true;
+                        var operation = $@"UPDATE {type.Name} SET IsProcessed = 1 WHERE Id = @Id";
 
-                        var Commandresult = await _dbConnection.ExecuteAsync(operation, clientEvent, transaction);
+                        var commandResult = await _dbConnection.ExecuteAsync(operation, integrationEvent);
 
-                        if (Commandresult > 0)
+                        if (commandResult > 0)
                         {
-                            _logger.LogInformation($"{clientEvent.Id} IsProcessed status has been updated");
+                            _logger.LogInformation($"{integrationEvent.Id} IsProcessed status has been updated");
                         }
                         else
                         {
-                            _logger.LogWarning($"{clientEvent.Id} IsProcessed status has not been updated!");
+                            _logger.LogWarning($"{integrationEvent.Id} IsProcessed status has not been updated!");
                         }
-
-                        transaction.Commit();
                     }
                 }
                 catch (Exception exception)
@@ -58,8 +69,6 @@ namespace WebStore.EventBus.BackgroundJobService
                     _logger.LogError($"Message: {exception.Message}\nStack trace: {exception.StackTrace}");
                 }
             }
-
-            _dbConnection.Close();
         }
     }
 }

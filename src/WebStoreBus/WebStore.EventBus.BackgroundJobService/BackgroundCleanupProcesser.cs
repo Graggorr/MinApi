@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
 using System.Data;
+using WebStore.Events.Clients;
 
 namespace WebStore.EventBus.BackgroundJobService
 {
@@ -9,7 +10,9 @@ namespace WebStore.EventBus.BackgroundJobService
     {
         private readonly ILogger _logger = logger;
         private readonly IDbConnection _dbConnection = dbConnection;
-        private const string QUERY = @"DELETE FROM ClientEvent WHERE IsProcessed = 1";
+
+        private const string QUERY = @"SELECT * FROM ClientEvent WHERE IsProcessed = 1";
+        private const string FUNCTION = @"DELETE FROM ClientEvent WHERE Id = @Id";
 
         public async Task ProcessJob()
         {
@@ -17,11 +20,28 @@ namespace WebStore.EventBus.BackgroundJobService
             {
                 _dbConnection.Open();
             }
+
             try
             {
-                using var transaction = _dbConnection.BeginTransaction();
-                await _dbConnection.ExecuteAsync(QUERY, transaction: transaction);
-                transaction.Commit();
+                var events = await _dbConnection.QueryAsync<ClientEvent>(QUERY);
+                var enumerableToDelete = GetEventsToDelete(events);
+
+                foreach (var itemToDelete in enumerableToDelete)
+                {
+                    using var transaction = _dbConnection.BeginTransaction();
+                    var result = await _dbConnection.ExecuteAsync(FUNCTION, itemToDelete, transaction: transaction);
+
+                    if (result is 0)
+                    {
+                        _logger.LogWarning($"Cannot delete event with ID: {itemToDelete.Id}");
+
+                        continue;
+                    }
+
+                    transaction.Commit();
+
+                    _logger.LogDebug($"Event with ID: {itemToDelete.Id} has been deleted due to event storage timeout.");
+                }
 
                 _logger.LogInformation("Cleanup for ClientEvents has been performed");
             }
@@ -31,6 +51,23 @@ namespace WebStore.EventBus.BackgroundJobService
             }
 
             _dbConnection.Close();
+        }
+
+        private static IEnumerable<ClientEvent> GetEventsToDelete(IEnumerable<ClientEvent> events)
+        {
+            var list = new List<ClientEvent>();
+
+            foreach (var clientEvent in events)
+            {
+                var result = DateTime.UtcNow.Subtract(clientEvent.CreationTimeUtc);
+
+                if (result.TotalDays > 30)
+                {
+                    list.Add(clientEvent);
+                }
+            }
+
+            return list;
         }
     }
 }

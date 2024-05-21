@@ -14,7 +14,7 @@ COPY ["src/WebStoreBus/WebStore.EventBus.BackgroundJobService/WebStore.EventBus.
 COPY ["src/WebStoreCommon/WebStore.Events/WebStore.Events.csproj", "src/WebStoreCommon/WebStore.Events/"]
 COPY ["src/WebStoreCommon/WebStore.EventBus.Abstraction/WebStore.EventBus.Abstraction.csproj", "src/WebStoreCommon/WebStore.EventBus.Abstraction/"]
 COPY ["src/WebStoreBus/WebStore.EventBus.RabbitMq/WebStore.EventBus.RabbitMq.csproj", "src/WebStoreBus/WebStore.EventBus.RabbitMq/"]
-COPY ["src/WebStoreCommon/Webstore.Extensions/Webstore.Extensions.csproj", "src/WebStoreCommon/Webstore.Extensions/"]
+COPY ["src/WebStoreCommon/WebStore.Extensions/WebStore.Extensions.csproj", "src/WebStoreCommon/Webstore.Extensions/"]
 RUN dotnet restore "./src/WebStoreBus/WebStore.EventBus.Service/./WebStore.EventBus.Service.csproj"
 COPY . .
 WORKDIR "/src/src/WebStoreBus/WebStore.EventBus.Service"

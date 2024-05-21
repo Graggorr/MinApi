@@ -6,6 +6,7 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 using WebStore.EventBus.Abstraction;
+using WebStore.EventBus.Abstraction.Extensions;
 
 namespace WebStore.Consumer.RabbitMq
 {
@@ -38,11 +39,12 @@ namespace WebStore.Consumer.RabbitMq
             consumer.Received += OnReceived;
 
             var typeName = _type.Name;
-            var index = typeName.IndexOf("Client");
-            var queueName = $"client_{typeName.Remove(index).ToLower()}";
+            var result = GetTypeAndAction(typeName);
+            var queueName = $"{result[0]}_{result[1]}";
+            var additionalValue = typeName.Contains("order", StringComparison.CurrentCultureIgnoreCase) ? "/orders" : string.Empty;
 
+            _channel.PrepareQueue(EXCHANGE_NAME, queueName, $"users/players/customers{additionalValue}");
             _channel.BasicQos(0, 1, false);
-            PrepareQueue(_channel, queueName);
             _channel.BasicConsume(queueName, false, consumer);
 
             return Result.Ok();
@@ -58,14 +60,30 @@ namespace WebStore.Consumer.RabbitMq
             if (result.IsSuccess)
             {
                 _channel.BasicAck(args.DeliveryTag, false);
+                _logger.LogInformation($"Message of {_type.Name} with ID {integrationEvent.Id} has been acked successfully.");
+
+                return;
             }
+
+            _logger.LogWarning($"Cannot delete message of {_type.Name} with ID {integrationEvent.Id}!");
         }
 
-        private static void PrepareQueue(IModel channel, string queueName)
+        private static string[] GetTypeAndAction(string str)
         {
-            channel.ExchangeDeclare(EXCHANGE_NAME, "direct", true, false, null);
-            channel.QueueDeclare(queueName, true, false, false, null);
-            channel.QueueBind(queueName, EXCHANGE_NAME, "users/players/customers");
+            var index = 0;
+            var isFound = false;
+
+            while (!isFound)
+            {
+                index++;
+                isFound = char.IsUpper(str[index]);
+            }
+
+            var action = str[..index].ToLower();
+            var indexOfEvent = str.IndexOf("Event");
+            var target = str.Remove(indexOfEvent)[index..].ToLower();
+
+            return [target, action];
         }
     }
 }

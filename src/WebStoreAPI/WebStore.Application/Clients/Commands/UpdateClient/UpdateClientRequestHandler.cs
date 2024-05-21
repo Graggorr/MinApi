@@ -14,17 +14,18 @@ namespace WebStore.API.Application.Clients.Commands.UpdateClient
 
         public async Task<Result<Client>> Handle(UpdateClientRequest request, CancellationToken cancellationToken)
         {
-            var dto = request.Dto;
-            var businessValidationResult = await ClientBusinessValidator.BusinessValidationAsync(_clientRepository, dto);
+            var requestBody = request.RequestBody;
+            var businessValidationResult = await ClientBusinessValidator.BusinessValidationAsync(_clientRepository, requestBody);
 
             if (businessValidationResult.IsFailed)
             {
-                _logger.LogDebug($"{dto.Id} did not pass business validation.");
+                _logger.LogDebug($"{requestBody.Id} did not pass business validation.");
 
                 return businessValidationResult;
             }
 
-            var client = new Client { Id = dto.Id, Name = dto.Name, Email = dto.Email, PhoneNumber = dto.PhoneNumber, Orders = [] };
+            var client = new Client { Id = requestBody.Id, Name = requestBody.Name, Email = requestBody.Email,
+                PhoneNumber = requestBody.PhoneNumber, Orders = [] };
 
             return await _clientRepository.UpdateClientAsync(client);
         }

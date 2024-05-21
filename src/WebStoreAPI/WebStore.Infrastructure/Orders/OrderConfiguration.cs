@@ -8,11 +8,14 @@ namespace WebStore.API.Infrastructure.Orders
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
+            builder.ToTable(nameof(Order));
+
             builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id).HasColumnName("Id").ValueGeneratedOnAdd().IsRequired();
             builder.Property(e => e.Name).HasColumnName("Name").IsRequired();
             builder.Property(e => e.Id).HasColumnName("Id").IsRequired();
-            builder.Property(e => e.Price).HasColumnName("PhoneNumber").IsRequired();
-            builder.Property(e => e.Description).HasColumnName("Email").IsRequired();
+            builder.Property(e => e.Price).HasColumnName("Price").IsRequired();
+            builder.Property(e => e.Description).HasColumnName("Description").IsRequired();
         }
     }
 }

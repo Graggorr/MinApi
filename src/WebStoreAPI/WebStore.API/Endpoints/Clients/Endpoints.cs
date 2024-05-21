@@ -3,12 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using FluentResults;
 using MediatR;
-using WebStore.API.Application.Clients.Queries;
 using WebStore.API.Application.Clients.Commands;
 
-namespace WebStore.API.Service.Clients;
+namespace WebStore.API.Service.Endpoints.Clients;
 
-public static class Endpoints
+public static partial class Endpoints
 {
     public static IEndpointRouteBuilder MapClients(this IEndpointRouteBuilder builder)
     {
@@ -17,8 +16,8 @@ public static class Endpoints
         group.MapPost(string.Empty, PostClient).WithName(nameof(PostClient));
         group.MapGet("/{page:int}", GetPaginatedClients).WithName(nameof(GetPaginatedClients));
         group.MapGet("/{id:guid}", GetClient).WithName(nameof(GetClient));
-        group.MapPut("/{id}", PutClient).WithName(nameof(PutClient));
-        group.MapDelete("/{id}", DeleteClient).WithName(nameof(DeleteClient));
+        group.MapPut("/{id:guid}", PutClient).WithName(nameof(PutClient));
+        group.MapDelete("/{id:guid}", DeleteClient).WithName(nameof(DeleteClient));
 
         return builder;
     }
@@ -27,9 +26,9 @@ public static class Endpoints
         [FromBody] PostClientRequest request,
         [FromServices] IMediator mediator)
     {
-        var dto = new RegisterClientRequest(Guid.NewGuid(), request.Name, request.PhoneNumber, request.Email);
+        var registeredRequest = new RegisterClientRequest(Guid.NewGuid(), request.Name, request.PhoneNumber, request.Email);
 
-        var response = await mediator.Send(dto);
+        var response = await mediator.Send(registeredRequest);
 
         if (response.IsFailed)
         {
@@ -45,8 +44,8 @@ public static class Endpoints
        [AsParameters] PutClientRequest request,
        [FromServices] IMediator mediator)
     {
-        var dto = new RegisterClientRequest(request.Id, request.Body.Name, request.Body.PhoneNumber, request.Body.Email);
-        var handlingRequest = new UpdateClientRequest(dto);
+        var requestBody = new RegisterClientRequest(request.Id, request.Body.Name, request.Body.PhoneNumber, request.Body.Email);
+        var handlingRequest = new UpdateClientRequest(requestBody);
 
         var response = await mediator.Send(handlingRequest);
 
@@ -69,7 +68,7 @@ public static class Endpoints
         [AsParameters] DeleteClientRequest request,
         [FromServices] IMediator mediator)
     {
-        var handlingRequest = new DeleteClientHandlingRequest(request.Id);
+        var handlingRequest = new Application.Clients.Commands.DeleteClientRequest(request.Id);
 
         var response = await mediator.Send(handlingRequest);
 
@@ -92,7 +91,7 @@ public static class Endpoints
         [AsParameters] GetClientRequest request,
         [FromServices] IMediator mediator)
     {
-        var handlingRequest = new GetClientHandlingRequest(request.Id);
+        var handlingRequest = new Application.Clients.Queries.GetClientRequest(request.Id);
         var response = await mediator.Send(handlingRequest);
 
         if (response.IsFailed)
