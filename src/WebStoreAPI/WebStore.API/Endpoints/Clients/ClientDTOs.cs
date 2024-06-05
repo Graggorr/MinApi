@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebStore.API.Domain;
+using WebStore.API.Application.Clients;
 
 namespace WebStore.API.Service.Endpoints.Clients;
 
@@ -10,15 +10,15 @@ public record PostClientResponse(Guid Id);
 //Put
 public record PutClientRequest([FromRoute] Guid Id, [FromBody] PutClientRequestBody Body);
 public record PutClientRequestBody(string Name, string PhoneNumber, string Email);
-public record PutClientResponse(Client Client);
+public record PutClientResponse(ClientData Client);
 
 //Delete
 public record DeleteClientRequest(Guid Id);
-public record DeleteClientResponse(Client Client);
+public record DeleteClientResponse(ClientData Client);
 
 //Get
 public record GetClientRequest(Guid Id);
-public record GetClientResponse(Client Client);
+public record GetClientResponse(ClientData Client);
 
 public record GetPaginatedClientsRequest(int Page);
-public record GetPaginatedClientsResponse(IEnumerable<Client> Clients);
+public record GetPaginatedClientsResponse(IEnumerable<ClientData> Clients);

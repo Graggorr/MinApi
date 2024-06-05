@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using WebStore.API.Application.Clients.Commands;
 
 namespace WebStore.API.Application.Clients.Commands.UpdateClient
 {
@@ -7,9 +6,9 @@ namespace WebStore.API.Application.Clients.Commands.UpdateClient
     {
         public UpdateClientValidator()
         {
-            RuleFor(x => x.RequestBody.Name).NotEmpty();
-            RuleFor(x => x.RequestBody.PhoneNumber).NotEmpty();
-            RuleFor(x => x.RequestBody.Email).NotEmpty();
+            RuleFor(x => x.Client.Name).NotEmpty();
+            RuleFor(x => x.Client.PhoneNumber).NotEmpty();
+            RuleFor(x => x.Client.Email).NotEmpty();
         }
     }
 }

@@ -84,12 +84,15 @@ namespace WebStore.API.Infrastructure.Clients
             return Result.Ok(client);
         }
 
-        public Result<IEnumerable<Client>> GetPaginatedClients(int page)
+        public Task<Result<IEnumerable<Client>>> GetPaginatedClients(int page)
         {
-            const int pageSize = 25;
-            var clients = _context.Clients.Skip(page * pageSize).Take(pageSize);
+            return Task.Factory.StartNew(() =>
+            {
+                const int pageSize = 25;
+                var clients = _context.Clients.Skip(page * pageSize).Take(pageSize);
 
-            return Result.Ok(clients.AsEnumerable());
+                return Result.Ok(clients.AsEnumerable());
+            });
         }
 
         public async Task<bool> IsPhoneNumberUniqueAsync(string phoneNumber)
