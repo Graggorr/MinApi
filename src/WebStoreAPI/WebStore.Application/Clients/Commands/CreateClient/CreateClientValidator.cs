@@ -6,9 +6,9 @@ namespace WebStore.API.Application.Clients.Commands.CreateClient
     {
         public CreateClientValidator()
         {
-            RuleFor(x => x.Name).NotEmpty();
-            RuleFor(x => x.PhoneNumber).NotEmpty();
-            RuleFor(x => x.Email).NotEmpty();
+            RuleFor(x => x.Client.Name).NotEmpty();
+            RuleFor(x => x.Client.PhoneNumber).NotEmpty();
+            RuleFor(x => x.Client.Email).NotEmpty();
         }
     }
 }

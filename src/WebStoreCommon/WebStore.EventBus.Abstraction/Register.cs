@@ -8,46 +8,94 @@ namespace WebStore.EventBus.Abstraction
         public static IServiceCollection AddEventBusFromAssembly(this IServiceCollection services, Assembly assembly,
             ServiceLifetime lifetime = ServiceLifetime.Singleton)
         {
-            var eventBusType = typeof(IEventBus);
-            var consumerType = typeof(IConsumer);
-            var eventHandlerType = typeof(IIntegrationEventHandler<>);
-            var integrationEventType = typeof(IntegrationEvent);
-            var assemblyTypes = assembly.GetTypes();
+            var tasks = new Task<IServiceCollection>[] { AddConsumers(assembly, lifetime), AddEventBuses(assembly, lifetime), AddEventHandlers(assembly, lifetime) };
+            Task.WaitAll(tasks);
 
-            var eventHandlers = assemblyTypes.Where(x => x.GetInterface(eventHandlerType.Name) is not null && !x.IsAbstract).ToList();
-            var integrationEvents = assemblyTypes.Where(x => x.GetBaseType(integrationEventType.Name) is not null).ToList();
-            var eventBuses = assemblyTypes.Where(x => x.GetInterface(eventBusType.Name) is not null).ToList();
-            var consumer = assemblyTypes.FirstOrDefault(x => x.GetInterface(consumerType.Name) is not null);
+            var faultedTask = tasks.FirstOrDefault(x => x.Exception is not null);
 
-            if (consumer is not null)
+            if (faultedTask is not null)
             {
-                var consumers = new TypeContainer(consumerType, consumer);
-
-                for (var i = 0; i < integrationEvents.Count; i++)
-                {
-                    var eventHandler = eventHandlers.First(x => x.GetInterface(eventHandlerType.Name).GetGenericArguments().Contains(integrationEvents[i]));
-                    services.AddConsumerAndEventHandler(consumers, new(eventHandlerType, eventHandler), integrationEvents[i], lifetime);
-                }
+                throw faultedTask.Exception;
             }
 
-            foreach (var eventBus in eventBuses)
+            foreach (var task in tasks)
             {
-                services.Add(new(eventBusType, eventBus, lifetime));
+                services.AddRange(task.Result);
             }
 
             return services;
         }
 
-        private static IServiceCollection AddConsumerAndEventHandler(this IServiceCollection services, TypeContainer consumer,
-            TypeContainer eventHandler, Type integrationEventType, ServiceLifetime lifetime)
+        private static Task<IServiceCollection> AddEventBuses(Assembly assembly, ServiceLifetime lifetime)
         {
-            eventHandler.Service = eventHandler.Service.MakeGenericType(integrationEventType);
-            var consumerImplementation = consumer.Implementation.MakeGenericType(integrationEventType);
+            return Task.Factory.StartNew(() =>
+            {
+                IServiceCollection services = new ServiceCollection();
+                var eventBusService = typeof(IEventBus);
+                var assemblyTypes = assembly.GetTypes();
+                var eventBuses = assemblyTypes.Where(x => x.GetInterface(eventBusService.Name) is not null).ToList();
 
-            services.Add(new(eventHandler.Service, eventHandler.Implementation, lifetime));
-            services.Add(new(consumer.Service, consumerImplementation, lifetime));
+                foreach (var eventBus in eventBuses)
+                {
+                    services.Add(new(eventBusService, eventBus, lifetime));
+                }
 
-            return services;
+                return services;
+            });
+        }
+
+        private static Task<IServiceCollection> AddConsumers(Assembly assembly, ServiceLifetime lifetime)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                IServiceCollection services = new ServiceCollection();
+                var consumerService = typeof(IConsumer);
+                var integrationEventType = typeof(IntegrationEvent);
+                var assemblyTypes = assembly.GetTypes();
+
+                var integrationEvents = assemblyTypes.Where(x => x.GetBaseType(integrationEventType.Name) is not null).ToList();
+                var consumers = assemblyTypes.Where(x => x.GetInterface(consumerService.Name) is not null).ToList();
+
+                if (consumers.Count is not 0)
+                {
+                    consumers.ForEach(consumer =>
+                    {
+                        integrationEvents.ForEach(integrationEvent =>
+                        {
+                            var consumerImplementation = consumer.MakeGenericType(integrationEvent);
+                            services.Add(new(consumerService, consumerImplementation, lifetime));
+                        });
+                    });
+                }
+
+                return services;
+            });
+        }
+
+        private static Task<IServiceCollection> AddEventHandlers(Assembly assembly, ServiceLifetime lifetime)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                IServiceCollection services = new ServiceCollection();
+                var eventHandlerService = typeof(IIntegrationEventHandler<>);
+                var integrationEventType = typeof(IntegrationEvent);
+                var assemblyTypes = assembly.GetTypes();
+
+                var eventHandlers = assemblyTypes.Where(x => x.GetInterface(eventHandlerService.Name) is not null && !x.IsAbstract).ToList();
+                var integrationEvents = assemblyTypes.Where(x => x.GetBaseType(integrationEventType.Name) is not null).ToList();
+
+                if (eventHandlers.Count is not 0)
+                {
+                    integrationEvents.ForEach(integrationEvent =>
+                    {
+                        var eventHandlerImplementation = eventHandlers.First(x => x.GetInterface(eventHandlerService.Name).GetGenericArguments().Contains(integrationEvent));
+                        var eventHandlerServiceGeneric = eventHandlerService.MakeGenericType(integrationEvent);
+                        services.Add(new(eventHandlerServiceGeneric, eventHandlerImplementation, lifetime));
+                    });
+                }
+
+                return services;
+            });
         }
 
         private static Type? GetBaseType(this Type type, string name)
@@ -68,10 +116,12 @@ namespace WebStore.EventBus.Abstraction
             return typeToReturn;
         }
 
-        private class TypeContainer(Type service, Type implementation)
+        private static void AddRange(this IServiceCollection services, IEnumerable<ServiceDescriptor> values)
         {
-            public Type Service { get; set; } = service;
-            public Type Implementation { get; set; } = implementation;
+            foreach (var value in values)
+            {
+                services.Add(value);
+            }
         }
     }
 }

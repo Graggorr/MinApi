@@ -22,7 +22,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\WebStore.Application\WebStore.API.Application.csproj" />
-		<ProjectReference Include="..\WebStore.Domain\WebStore.API.Domain.csproj" />
 		<ProjectReference Include="..\WebStore.Infrastructure\WebStore.API.Infrastructure.csproj" />
 	</ItemGroup>
 

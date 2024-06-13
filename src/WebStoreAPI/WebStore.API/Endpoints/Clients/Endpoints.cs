@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using FluentResults;
 using MediatR;
+using WebStore.API.Application.Clients;
 using WebStore.API.Application.Clients.Commands;
 
 namespace WebStore.API.Service.Endpoints.Clients;
@@ -26,7 +27,7 @@ public static partial class Endpoints
         [FromBody] PostClientRequest request,
         [FromServices] IMediator mediator)
     {
-        var registeredRequest = new RegisterClientRequest(Guid.NewGuid(), request.Name, request.PhoneNumber, request.Email);
+        var registeredRequest = new RegisterClientRequest(new(Guid.NewGuid(), request.Name, request.PhoneNumber, request.Email));
 
         var response = await mediator.Send(registeredRequest);
 
@@ -44,8 +45,8 @@ public static partial class Endpoints
        [AsParameters] PutClientRequest request,
        [FromServices] IMediator mediator)
     {
-        var requestBody = new RegisterClientRequest(request.Id, request.Body.Name, request.Body.PhoneNumber, request.Body.Email);
-        var handlingRequest = new UpdateClientRequest(requestBody);
+        var clientData = new ClientData(request.Id, request.Body.Name, request.Body.PhoneNumber, request.Body.Email);
+        var handlingRequest = new UpdateClientRequest(clientData);
 
         var response = await mediator.Send(handlingRequest);
 

@@ -26,7 +26,7 @@ namespace WebStore.API.Application.Orders.Commands.CreateOrder
 
             var client = clientResult.Value;
 
-            var order = new Order()
+            var order = new Order
             {
                 Id = request.OrderId,
                 ClientId = client.Id,

@@ -6,9 +6,9 @@ namespace WebStore.Service
     {
         private readonly IEnumerable<IConsumer> _consumers = consumers;
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            await Task.Factory.StartNew(() =>
+            return Task.Factory.StartNew(() =>
             {
                 foreach (var consumer in _consumers)
                 {

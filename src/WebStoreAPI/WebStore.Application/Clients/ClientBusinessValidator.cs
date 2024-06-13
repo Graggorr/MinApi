@@ -10,7 +10,7 @@ namespace WebStore.API.Application.Clients
         private const string EMAIL_REGEX = "^[^@\\s]+@[^@\\s]+\\.(com|net|org|gov)$";
         private const string PHONE_NUMBER_REGEX = "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$";
 
-        public static async Task<Result> BusinessValidationAsync(IClientRepository clientRepository, RegisterClientRequest client)
+        public static async Task<Result> BusinessValidationAsync(IClientRepository clientRepository, ClientData client)
         {
             if (!Regex.IsMatch(client.PhoneNumber, PHONE_NUMBER_REGEX))
             {

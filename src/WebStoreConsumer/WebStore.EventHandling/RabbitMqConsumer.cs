@@ -43,7 +43,7 @@ namespace WebStore.Consumer.RabbitMq
             var queueName = $"{result[0]}_{result[1]}";
             var additionalValue = typeName.Contains("order", StringComparison.CurrentCultureIgnoreCase) ? "/orders" : string.Empty;
 
-            _channel.PrepareQueue(EXCHANGE_NAME, queueName, $"users/players/customers{additionalValue}");
+            _channel.InitializeQueue(EXCHANGE_NAME, queueName, $"users/players/customers{additionalValue}");
             _channel.BasicQos(0, 1, false);
             _channel.BasicConsume(queueName, false, consumer);
 
@@ -65,7 +65,7 @@ namespace WebStore.Consumer.RabbitMq
                 return;
             }
 
-            _logger.LogWarning($"Cannot delete message of {_type.Name} with ID {integrationEvent.Id}!");
+            _logger.LogWarning($"Cannot proceed with message of {_type.Name}. ID: {integrationEvent.Id}!");
         }
 
         private static string[] GetTypeAndAction(string str)

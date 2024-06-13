@@ -14,16 +14,17 @@ namespace WebStore.API.Application.Clients.Commands.CreateClient
 
         public async Task<Result<Guid>> Handle(RegisterClientRequest request, CancellationToken cancellationToken)
         {
-            var businessValidationResult = await ClientBusinessValidator.BusinessValidationAsync(_clientRepository, request);
+            var clientData = request.Client;
+            var businessValidationResult = await ClientBusinessValidator.BusinessValidationAsync(_clientRepository, clientData);
 
             if (businessValidationResult.IsFailed)
             {
-                _logger.LogDebug($"{request.Id} did not pass business validation.");
+                _logger.LogDebug($"{clientData.Id} did not pass business validation.");
 
                 return businessValidationResult;
             }
 
-            var client = new Client { Id = request.Id, Email = request.Email, Name = request.Name, PhoneNumber = request.PhoneNumber, Orders = [] };
+            var client = new Client { Id = clientData.Id, Email = clientData.Email, Name = clientData.Name, PhoneNumber = clientData.PhoneNumber, Orders = [] };
 
             await _clientRepository.AddClientAsync(client);
 
