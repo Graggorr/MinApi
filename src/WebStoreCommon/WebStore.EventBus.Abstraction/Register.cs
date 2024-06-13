@@ -11,16 +11,16 @@ namespace WebStore.EventBus.Abstraction
             var tasks = new Task<IServiceCollection>[] { AddConsumers(assembly, lifetime), AddEventBuses(assembly, lifetime), AddEventHandlers(assembly, lifetime) };
             Task.WaitAll(tasks);
 
+            var faultedTask = tasks.FirstOrDefault(x => x.Exception is not null);
+
+            if (faultedTask is not null)
+            {
+                throw faultedTask.Exception;
+            }
+
             foreach (var task in tasks)
             {
-                if (task.IsCompleted)
-                {
-                    services.AddRange(task.Result);
-
-                    continue;
-                }
-
-                throw task.Exception;
+                services.AddRange(task.Result);
             }
 
             return services;
