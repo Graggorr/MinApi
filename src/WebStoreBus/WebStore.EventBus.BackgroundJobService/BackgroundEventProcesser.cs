@@ -37,37 +37,54 @@ namespace WebStore.EventBus.BackgroundJobService
 
         private async Task ProceedEvents<T>() where T : IntegrationEvent
         {
-            var type = typeof(T);
-            var integrationEvents = (await _dbConnection.QueryAsync(type, string.Format(QUERY, type.Name))) as IEnumerable<T>;
+            var integrationEvents = await _dbConnection.QueryAsync<T>(string.Format(QUERY, typeof(T).Name));
+            var tasks = new List<Task>();
 
             foreach (var integrationEvent in integrationEvents)
             {
-                try
+                tasks.Add(ProceedEvent(integrationEvent));
+            }
+
+            Task.WaitAll([.. tasks]);
+        }
+
+        private async Task ProceedEvent<T>(T integrationEvent) where T : IntegrationEvent
+        {
+            using var transaction = _dbConnection.BeginTransaction(IsolationLevel.RepeatableRead);
+
+            try
+            {
+                _logger.LogInformation($"{integrationEvent.Id} is published to the event bus");
+                integrationEvent.IsProcessed = true;
+                var operation = $@"UPDATE {typeof(T).Name} SET IsProcessed = 1 WHERE Id = @Id";
+
+                var commandResult = await _dbConnection.ExecuteAsync(operation, integrationEvent, transaction);
+
+                if (commandResult <= 0)
                 {
-                    var result = await _eventBus.PublishAsync(integrationEvent);
+                    _logger.LogWarning($"{integrationEvent.Id} IsProcessed status can't be updated. Rolling back!");
+                    transaction.Rollback();
 
-                    if (result.IsSuccess)
-                    {
-                        _logger.LogInformation($"{integrationEvent.Id} is published to the event bus");
-                        integrationEvent.IsProcessed = true;
-                        var operation = $@"UPDATE {type.Name} SET IsProcessed = 1 WHERE Id = @Id";
-
-                        var commandResult = await _dbConnection.ExecuteAsync(operation, integrationEvent);
-
-                        if (commandResult > 0)
-                        {
-                            _logger.LogInformation($"{integrationEvent.Id} IsProcessed status has been updated");
-                        }
-                        else
-                        {
-                            _logger.LogWarning($"{integrationEvent.Id} IsProcessed status has not been updated!");
-                        }
-                    }
+                    return;
                 }
-                catch (Exception exception)
+
+                var result = await _eventBus.PublishAsync(integrationEvent);
+
+                if (result.IsSuccess)
                 {
-                    _logger.LogError($"Message: {exception.Message}\nStack trace: {exception.StackTrace}");
+                    _logger.LogInformation($"{integrationEvent.Id} IsProcessed status has been updated");
+                    transaction.Commit();
+
+                    return;
                 }
+
+                _logger.LogWarning($"{integrationEvent.Id} cannot be published by event bus. Rolling back!");
+                transaction.Rollback();
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError($"Message: {exception.Message}\nStack trace: {exception.StackTrace}");
+                transaction.Rollback();
             }
         }
     }
