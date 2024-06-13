@@ -43,7 +43,7 @@ namespace WebStore.EventBus.RabbitMq
             }
         }
 
-        public async Task<Result> PublishAsync<T>(T integrationEvent) where T : IntegrationEvent
-            => await Task.Factory.StartNew(() => Publish(integrationEvent));
+        public Task<Result> PublishAsync<T>(T integrationEvent) where T : IntegrationEvent
+            => Task.Factory.StartNew(() => Publish(integrationEvent));
     }
 }

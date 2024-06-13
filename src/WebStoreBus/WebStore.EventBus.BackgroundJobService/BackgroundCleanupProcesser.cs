@@ -24,23 +24,23 @@ namespace WebStore.EventBus.BackgroundJobService
             try
             {
                 var events = await _dbConnection.QueryAsync<ClientEvent>(QUERY);
-                var enumerableToDelete = GetEventsToDelete(events);
+                var eventsToDelete = GetEventsToDelete(events);
 
-                foreach (var itemToDelete in enumerableToDelete)
+                foreach (var clientEvent in eventsToDelete)
                 {
                     using var transaction = _dbConnection.BeginTransaction();
-                    var result = await _dbConnection.ExecuteAsync(FUNCTION, itemToDelete, transaction: transaction);
+                    var result = await _dbConnection.ExecuteAsync(FUNCTION, clientEvent, transaction: transaction);
 
                     if (result is 0)
                     {
-                        _logger.LogWarning($"Cannot delete event with ID: {itemToDelete.Id}");
+                        _logger.LogWarning($"Cannot delete event with ID: {clientEvent.Id}");
 
                         continue;
                     }
 
                     transaction.Commit();
 
-                    _logger.LogDebug($"Event with ID: {itemToDelete.Id} has been deleted due to event storage timeout.");
+                    _logger.LogDebug($"Event with ID: {clientEvent.Id} has been deleted due to event storage timeout.");
                 }
 
                 _logger.LogInformation("Cleanup for ClientEvents has been performed");

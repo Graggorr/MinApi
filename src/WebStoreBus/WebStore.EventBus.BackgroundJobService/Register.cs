@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using WebStore.Extensions;
 using WebStore.EventBus.RabbitMq;
+using System.Data.Entity.Infrastructure;
 
 namespace WebStore.EventBus.BackgroundJobService
 {
@@ -18,7 +19,7 @@ namespace WebStore.EventBus.BackgroundJobService
             services.AddRabbitMq(configuration);
             services.AddHangfire(config => config.UseSqlServerStorage(connectionString));
             services.AddHangfireServer(config => config.SchedulePollingInterval = TimeSpan.FromSeconds(1));
-            services.AddSingleton<IDbConnection>(sp => new SqlConnection(connectionString));
+            services.AddSingleton<IDbConnectionFactory>(sp => new SqlConnectionFactory(connectionString));
             services.AddSingleton<IBackgroundJobProcesser, BackgroundEventProcesser>();
             services.AddSingleton<IBackgroundJobProcesser, BackgroundCleanupProcesser>();
 
